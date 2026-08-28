@@ -1,0 +1,493 @@
+{
+  "metadata": {
+    "nom": "Dataset Coûts Réels & Système D - Production Cinéma Cameroun",
+    "version": "1.0.0",
+    "date_generation": "2026-08-12",
+    "source_recherche": "Web search + thèse académique + contexte marché local",
+    "niveau_confiance_global": "Moyen (peu de grilles tarifaires officielles, tout se négocie)",
+    "devise_reference": "XAF (FCFA)",
+    "taux_change_approximatif": {
+      "EUR": 655.957,
+      "USD": 600.0
+    },
+    "note_methodologique": "Les tarifs sont des 'prix du marché' pour un projet indépendant. Tout est négociable. Les prix marqués 'estime_expert' sont basés sur l'analyse du marché camerounais. Les prix 'source_web' proviennent de sources documentées."
+  },
+  "materiel": {
+    "description": "Prix de location journaliers pour le matériel de tournage au Cameroun. La plupart du matériel haut de gamme doit être importé ou loué à des maisons spécialisées à Yaoundé/Douala.",
+    "note_generale": "Le marché de location de matériel cinéma est limité au Cameroun. Pour les productions importantes, le matériel est souvent importé d'Europe (France/Belgique) ou d'Afrique du Sud.",
+    "cameras": [
+      {
+        "modele": "Sony FX3 (Full-Frame Cinema)",
+        "prix_jour_XAF": "80000 - 150000",
+        "prix_jour_EUR": "122 - 229",
+        "prix_semaine_XAF": "400000 - 700000",
+        "prix_semaine_EUR": "610 - 1067",
+        "disponibilite": "Moyenne (quelques opérateurs à Yaoundé et Douala)",
+        "note": "Très utilisée au Cameroun pour le reportage et la fiction low-budget. Légère et polyvalente.",
+        "source": "estime_expert (comparaison internationale ajustée au marché local)"
+      },
+      {
+        "modele": "Blackmagic Pocket Cinema Camera 6K / 6K Pro",
+        "prix_jour_XAF": "60000 - 100000",
+        "prix_jour_EUR": "91 - 152",
+        "prix_semaine_XAF": "300000 - 500000",
+        "prix_semaine_EUR": "457 - 762",
+        "disponibilite": "Moyenne",
+        "note": "Populaire chez les cinéastes indépendants camerounais pour son rapport qualité/prix.",
+        "source": "estime_expert"
+      },
+      {
+        "modele": "Canon C70 / C300 Mark III",
+        "prix_jour_XAF": "100000 - 180000",
+        "prix_jour_EUR": "152 - 274",
+        "prix_semaine_XAF": "500000 - 900000",
+        "prix_semaine_EUR": "762 - 1372",
+        "disponibilite": "Faible à moyenne",
+        "note": "Utilisée pour les productions corporate et documentaires.",
+        "source": "estime_expert"
+      },
+      {
+        "modele": "RED Komodo / V-Raptor",
+        "prix_jour_XAF": "150000 - 250000",
+        "prix_jour_EUR": "229 - 381",
+        "prix_semaine_XAF": "750000 - 1200000",
+        "prix_semaine_EUR": "1143 - 1830",
+        "disponibilite": "Faible (importation nécessaire)",
+        "note": "Rarement disponible localement. Nécessite souvent d'être importée.",
+        "source": "estime_expert"
+      },
+      {
+        "modele": "ARRI Alexa Mini / 35",
+        "prix_jour_XAF": "300000 - 500000",
+        "prix_jour_EUR": "457 - 762",
+        "prix_semaine_XAF": "1500000 - 2500000",
+        "prix_semaine_EUR": "2287 - 3812",
+        "disponibilite": "Très faible (importation depuis l'Europe obligatoire)",
+        "note": "Quasi-inexistante en location locale. Budget importation : ajouter 30-50% de frais de transport/assurance/douane.",
+        "source": "estime_expert"
+      }
+    ],
+    "optiques": [
+      {
+        "type": "Kit optiques standard (24-70mm, 50mm, 85mm)",
+        "prix_jour_XAF": "30000 - 50000",
+        "prix_jour_EUR": "46 - 76",
+        "note": "Prix pour un kit de 3 optiques fixes ou zooms",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Kit optiques cinéma (PL mount, primes)",
+        "prix_jour_XAF": "50000 - 100000",
+        "prix_jour_EUR": "76 - 152",
+        "note": "Sigma Cine, Rokinon, ou équivalent. Optiques haut de gamme (Cooke, Zeiss Supreme) rares localement.",
+        "source": "estime_expert"
+      }
+    ],
+    "son": [
+      {
+        "type": "Kit son complet (perche + 2 HF + enregistreur Sound Devices / Zoom F8)",
+        "prix_jour_XAF": "40000 - 80000",
+        "prix_jour_EUR": "61 - 122",
+        "prix_semaine_XAF": "200000 - 400000",
+        "prix_semaine_EUR": "305 - 610",
+        "note": "Kit standard pour fiction. Le matériel de son de qualité est plus disponible que les caméras haut de gamme.",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Kit son basique (perche + 1 HF + enregistreur Zoom H6)",
+        "prix_jour_XAF": "20000 - 35000",
+        "prix_jour_EUR": "30 - 53",
+        "prix_semaine_XAF": "100000 - 175000",
+        "prix_semaine_EUR": "152 - 267",
+        "note": "Pour documentaire ou tournage léger.",
+        "source": "estime_expert"
+      }
+    ],
+    "eclairage": [
+      {
+        "type": "Kit LED 3 panneaux (1x1, softbox, trépieds)",
+        "prix_jour_XAF": "25000 - 40000",
+        "prix_jour_EUR": "38 - 61",
+        "note": "Éclairage LED devenu standard. Moins de consommation, compatible groupe électrogène.",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Kit HMI / Tungstène traditionnel (2.5kW, 1.2kW, 650W)",
+        "prix_jour_XAF": "50000 - 100000",
+        "prix_jour_EUR": "76 - 152",
+        "note": "Nécessite un groupe électrogène puissant. Moins utilisé depuis l'arrivée des LED.",
+        "source": "estime_expert"
+      }
+    ],
+    "accessoires": [
+      {
+        "type": "Stabilisateur (Ronin RS3 Pro, etc.)",
+        "prix_jour_XAF": "15000 - 25000",
+        "prix_jour_EUR": "23 - 38",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Drone DJI Mavic 3 / Air 3 (si autorisation obtenue)",
+        "prix_jour_XAF": "50000 - 100000",
+        "prix_jour_EUR": "76 - 152",
+        "note": "VOIR DATASET FRICTIONS - Drones strictement réglementés au Cameroun",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Grue / Jib portable",
+        "prix_jour_XAF": "30000 - 60000",
+        "prix_jour_EUR": "46 - 91",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Dolly / Slider",
+        "prix_jour_XAF": "20000 - 40000",
+        "prix_jour_EUR": "30 - 61",
+        "source": "estime_expert"
+      }
+    ],
+    "importation_materiel": {
+      "description": "Pour le matériel non disponible localement, importation depuis l'Europe ou l'Afrique du Sud",
+      "couts_additionnels": {
+        "transport_aller_retour": "15-25% du prix de location",
+        "assurance_transport": "3-5% du prix du matériel",
+        "douane_cameroun": "10-30% de la valeur déclarée (variable selon les agents)",
+        "delai_transport": "5-10 jours depuis l'Europe, 3-5 jours depuis l'Afrique du Sud",
+        "note": "La douane camerounaise peut être imprévisible. Prévoir un régisseur/fixeur expérimenté pour gérer l'importation."
+      },
+      "source": "estime_expert + web_search:6#0 + web_search:6#1"
+    }
+  },
+  "humain": {
+    "description": "Cachets journaliers pour les techniciens et artistes locaux. Les tarifs varient énormément selon l'expérience et la renommée.",
+    "note_generale": "Le marché du travail cinéma au Cameroun est principalement informel. Pas de convention collective spécifique. Les tarifs sont des fourchettes basées sur les pratiques observées.",
+    "roles_cles": [
+      {
+        "role": "Chef Opérateur (DOP) - Local expérimenté",
+        "cachet_jour_XAF": "80000 - 200000",
+        "cachet_jour_EUR": "122 - 305",
+        "cachet_semaine_XAF": "400000 - 1000000",
+        "note": "Avec expérience internationale ou productions Nollywood. Tarif négociable selon le projet.",
+        "source": "estime_expert + thèse académique contexte"
+      },
+      {
+        "role": "Chef Opérateur (DOP) - Débutant / Indépendant",
+        "cachet_jour_XAF": "30000 - 70000",
+        "cachet_jour_EUR": "46 - 107",
+        "cachet_semaine_XAF": "150000 - 350000",
+        "note": "Jeune opérateur local, souvent équipé de son propre matériel (kit fee négociable séparément)",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Ingénieur du Son - Expérimenté",
+        "cachet_jour_XAF": "50000 - 120000",
+        "cachet_jour_EUR": "76 - 183",
+        "cachet_semaine_XAF": "250000 - 600000",
+        "note": "Professionnel avec expérience fiction/documentaire. Le son est souvent sous-budgeté au Cameroun.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Ingénieur du Son - Débutant",
+        "cachet_jour_XAF": "25000 - 50000",
+        "cachet_jour_EUR": "38 - 76",
+        "cachet_semaine_XAF": "125000 - 250000",
+        "note": "Souvent combine son et perche. Kit fee à négocier si matériel personnel.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Régisseur Général (Fixer/Production Manager local)",
+        "cachet_jour_XAF": "50000 - 150000",
+        "cachet_jour_EUR": "76 - 229",
+        "cachet_semaine_XAF": "250000 - 750000",
+        "note": "Rôle CRITIQUE au Cameroun. Le régisseur gère les relations locales, les autorisations, les imprévus. Un bon régisseur vaut son pesant d'or.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Régisseur Adjoint / Assistant de production",
+        "cachet_jour_XAF": "20000 - 40000",
+        "cachet_jour_EUR": "30 - 61",
+        "cachet_semaine_XAF": "100000 - 200000",
+        "note": "Soutien logistique, transport, catering sur le terrain.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Cadreur / Cameraman",
+        "cachet_jour_XAF": "30000 - 80000",
+        "cachet_jour_EUR": "46 - 122",
+        "cachet_semaine_XAF": "150000 - 400000",
+        "note": "Pour les productions où le DOP ne cadre pas lui-même.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Scripte",
+        "cachet_jour_XAF": "25000 - 50000",
+        "cachet_jour_EUR": "38 - 76",
+        "cachet_semaine_XAF": "125000 - 250000",
+        "note": "Profession rare au Cameroun. Souvent assurée par l'assistant réalisateur.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Chef Électro / Machino",
+        "cachet_jour_XAF": "30000 - 60000",
+        "cachet_jour_EUR": "46 - 91",
+        "cachet_semaine_XAF": "150000 - 300000",
+        "note": "Gère le groupe électrogène, l'éclairage, les distributions électriques.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Maquilleur / Coiffeur",
+        "cachet_jour_XAF": "20000 - 50000",
+        "cachet_jour_EUR": "30 - 76",
+        "cachet_semaine_XAF": "100000 - 250000",
+        "note": "Tarif variable selon le nombre de comédiens et la complexité des maquillages.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Costumier",
+        "cachet_jour_XAF": "25000 - 60000",
+        "cachet_jour_EUR": "38 - 91",
+        "cachet_semaine_XAF": "125000 - 300000",
+        "note": "Souvent combiné avec le rôle de décorateur sur les petites productions.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Monteur (Post-production)",
+        "cachet_jour_XAF": "40000 - 100000",
+        "cachet_jour_EUR": "61 - 152",
+        "note": "Tarif forfaitaire souvent négocié pour l'ensemble du film. Paiement parfois différé après première.",
+        "source": "estime_expert + thèse académique"
+      },
+      {
+        "role": "Mixeur / Étalonneur (Post-production)",
+        "cachet_jour_XAF": "50000 - 150000",
+        "cachet_jour_EUR": "76 - 229",
+        "note": "Spécialistes rares. Souvent sous-traités à l'étranger (France, Belgique, Afrique du Sud) pour les productions importantes.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Acteur principal - Connu / Star locale",
+        "cachet_jour_XAF": "100000 - 500000",
+        "cachet_jour_EUR": "152 - 762",
+        "note": "Stars du cinéma camerounais ou nigérian (Nollywood) installés au Cameroun.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Acteur principal - Débutant / Figurant parlant",
+        "cachet_jour_XAF": "15000 - 50000",
+        "cachet_jour_EUR": "23 - 76",
+        "note": "Figurants : 5000-15000 XAF/jour. Acteurs débutants : 15000-50000 XAF/jour.",
+        "source": "estime_expert"
+      },
+      {
+        "role": "Figurant (Silhouette / Background)",
+        "cachet_jour_XAF": "5000 - 15000",
+        "cachet_jour_EUR": "7.60 - 22.90",
+        "note": "Parfois non rémunérés dans les productions ultra low-budget (contre repas + visibilité)",
+        "source": "estime_expert"
+      }
+    ],
+    "kit_fees": {
+      "description": "Supplément payé aux techniciens qui apportent leur propre matériel",
+      "son_equipe": "15000 - 40000 XAF/jour",
+      "camera_equipee": "20000 - 50000 XAF/jour",
+      "eclairage_equipe": "10000 - 30000 XAF/jour",
+      "note": "Négociable. Sur les petites productions, le kit fee est souvent intégré au cachet global."
+    }
+  },
+  "systeme_D": {
+    "description": "Comment les productions locales contournent le manque de budget. Ces 'hacks' sont essentiels pour l'agent IA.",
+    "hacks_production": [
+      {
+        "nom": "La Grue du Bled",
+        "description": "Au lieu de louer une grue de cinéma (trop chère et rare), utiliser des échafaudages locaux en bambou ou des toits de pick-up 4x4 pour les plans en hauteur.",
+        "economie_estimee_XAF": "200000 - 500000/jour",
+        "economie_estimee_EUR": "305 - 762/jour",
+        "conditions": "Nécessite un opérateur agile et des tests de sécurité. Ne pas dépasser 3m de hauteur sans harnais.",
+        "niveau_risque": "Moyen",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Le Dolly du Quartier",
+        "description": "Utiliser un skateboard, une brouette, ou un chariot de supermarché comme dolly improvisé sur les sols lisses.",
+        "economie_estimee_XAF": "20000 - 40000/jour",
+        "economie_estimee_EUR": "30 - 61/jour",
+        "conditions": "Fonctionne sur du carrelage ou du béton lisse. Inutilisable en terre battue.",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "L'Éclairage Solaire",
+        "description": "Utiliser des panneaux solaires portables + batteries lithium pour alimenter les LED en zone sans ENEO, évitant le groupe électrogène bruyant.",
+        "economie_estimee_XAF": "50000 - 100000/jour",
+        "economie_estimee_EUR": "76 - 152/jour",
+        "conditions": "Nécessite un ensoleillement suffisant (saison sèche idéale). Puissance limitée (petites LED uniquement).",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Le Son du Téléphone",
+        "description": "En secours, utiliser un smartphone avec micro cravate comme enregistreur audio de secours si le Nagra/Zoom tombe en panne.",
+        "economie_estimee_XAF": "0 (matériel déjà possédé)",
+        "conditions": "Qualité acceptable pour le dialogue en intérieur. Nécessite synchronisation en post-prod (plural eyes).",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "La Location Maison",
+        "description": "Louer une maison d'habitant comme plateau de tournage + hébergement de l'équipe. Négocier un forfait global.",
+        "economie_estimee_XAF": "50000 - 150000/jour",
+        "economie_estimee_EUR": "76 - 229/jour",
+        "conditions": "Nécessite l'accord des voisins et du chef de quartier. Prévoir une caution pour les dégâts.",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Le Transport Moto-Taxi",
+        "description": "Pour les repérages et les déplacements rapides en ville, utiliser les motos-taxis (okada) au lieu de louer des voitures.",
+        "economie_estimee_XAF": "5000 - 10000/trajet",
+        "economie_estimee_EUR": "7.60 - 15.20/trajet",
+        "conditions": "Dangereux pour le matériel fragile. Réservé aux repérages sans matériel lourd.",
+        "niveau_risque": "Moyen",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Le Catering Mama",
+        "description": "Engager une 'mama' du quartier pour cuisiner les repas de l'équipe au lieu d'un traiteur professionnel. Cuisine locale, portions généreuses, prix négocié.",
+        "economie_estimee_XAF": "20000 - 40000/jour pour 20 personnes",
+        "economie_estimee_EUR": "30 - 61/jour pour 20 personnes",
+        "conditions": "Nécessite une cuisine fonctionnelle sur place. Prévoir les ingrédients (marché local).",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Les Costumes du Marché",
+        "description": "Acheter les costumes au marché second-hand (friperie) ou emprunter aux comédiens eux-mêmes, plutôt que de louer une costumière.",
+        "economie_estimee_XAF": "50000 - 150000 pour tout le film",
+        "economie_estimee_EUR": "76 - 229 pour tout le film",
+        "conditions": "Nécessite un repérage préalable du marché. Le marché Mokolo (Yaoundé) et le marché Congo (Douala) sont les meilleurs spots.",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      },
+      {
+        "nom": "Le Figurant Volontaire",
+        "description": "Recruter des figurants dans le village ou le quartier de tournage, contre un repas et une mention au générique.",
+        "economie_estimee_XAF": "0 (contre repas)",
+        "conditions": "Fonctionne bien dans les scènes de marché, de rue, ou de village. Nécessite un brief rapide.",
+        "niveau_risque": "Faible",
+        "source": "estime_expert + thèse académique"
+      },
+      {
+        "nom": "Le Montage sur Laptop",
+        "description": "Le monteur travaille sur son propre laptop avec DaVinci Resolve (gratuit) ou Premiere, évitant la location d'un studio de post-prod.",
+        "economie_estimee_XAF": "50000 - 150000/semaine",
+        "economie_estimee_EUR": "76 - 229/semaine",
+        "conditions": "Nécessite un laptop puissant. Le rendu final peut être long. Export sur disque dur externe.",
+        "niveau_risque": "Faible",
+        "source": "estime_expert"
+      }
+    ],
+    "alertes_IA": {
+      "scenario_budget_ultra_low": "SUGGESTION IA : Pour un budget < 5M XAF, activer le mode 'Système D Camerounais' : combiner 3-4 hacks pour réduire les coûts de 40-60%.",
+      "scenario_securite": "ALERTE JAUNE : Les hacks impliquant des hauteurs (grue du bled) ou des véhicules nécessitent une assurance adéquate. Vérifier la couverture du contrat d'assurance production."
+    }
+  },
+  "catering_restauration": {
+    "description": "Coût de la restauration pour une équipe de tournage au Cameroun.",
+    "note_generale": "La restauration est un poste souvent sous-estimé mais crucial pour le moral de l'équipe. Un repas correct évite l'abattement en milieu de journée.",
+    "options": [
+      {
+        "type": "Traiteur local (cuisine camerounaise)",
+        "cout_par_personne_XAF": "2500 - 5000",
+        "cout_par_personne_EUR": "3.80 - 7.60",
+        "cout_20_personnes_jour_XAF": "50000 - 100000",
+        "cout_20_personnes_jour_EUR": "76 - 152",
+        "description": "Repas complet : viande/poisson + féculent (plantain, igname, riz) + légumes + eau. Cuisine locale, portions généreuses.",
+        "avantages": [
+          "Économique",
+          "Authentique",
+          "Portions copieuses",
+          "Soutien à l'économie locale"
+        ],
+        "inconvenients": [
+          "Variété limitée sur plusieurs jours",
+          "Hygiène variable selon le traiteur",
+          "Peu adapté aux régimes spéciaux (végétarien, etc.)"
+        ],
+        "source": "estime_expert + web_search:11#2 + web_search:11#3"
+      },
+      {
+        "type": "Traiteur professionnel (cuisine variée)",
+        "cout_par_personne_XAF": "5000 - 10000",
+        "cout_par_personne_EUR": "7.60 - 15.20",
+        "cout_20_personnes_jour_XAF": "100000 - 200000",
+        "cout_20_personnes_jour_EUR": "152 - 305",
+        "description": "Repas complet avec options variées, buffet possible, service plus structuré.",
+        "avantages": [
+          "Variété",
+          "Hygiène contrôlée",
+          "Options diététiques possibles",
+          "Service rapide"
+        ],
+        "inconvenients": [
+          "Plus cher",
+          "Moins de connexion locale",
+          "Nécessite une commande à l'avance"
+        ],
+        "source": "estime_expert"
+      },
+      {
+        "type": "Restaurant local (repas groupé)",
+        "cout_par_personne_XAF": "4000 - 8000",
+        "cout_par_personne_EUR": "6.10 - 12.20",
+        "cout_20_personnes_jour_XAF": "80000 - 160000",
+        "cout_20_personnes_jour_EUR": "122 - 244",
+        "description": "Réservation d'un restaurant local pour l'équipe. Menu fixe négocié.",
+        "avantages": [
+          "Pas de logistique cuisine sur place",
+          "Cadre agréable",
+          "Pas de vaisselle à gérer"
+        ],
+        "inconvenients": [
+          "Déplacement de l'équipe (perte de temps)",
+          "Horaires fixes du restaurant",
+          "Bruit possible"
+        ],
+        "source": "estime_expert + web_search:11#3"
+      },
+      {
+        "type": "Catering 'Mama du quartier' (Système D)",
+        "cout_par_personne_XAF": "1500 - 3000",
+        "cout_par_personne_EUR": "2.30 - 4.60",
+        "cout_20_personnes_jour_XAF": "30000 - 60000",
+        "cout_20_personnes_jour_EUR": "46 - 91",
+        "description": "Engager une cuisinière locale qui prépare les repas sur place avec les ingrédients achetés au marché.",
+        "avantages": [
+          "Très économique",
+          "Cuisine authentique",
+          "Flexibilité horaire",
+          "Soutien direct à une famille locale"
+        ],
+        "inconvenients": [
+          "Qualité variable",
+          "Nécessite une cuisine sur place",
+          "Gestion des courses à prévoir"
+        ],
+        "source": "estime_expert"
+      }
+    ],
+    "boissons_et_snacks": {
+      "description": "Budget complémentaire pour les boissons et snacks entre les repas",
+      "eau_minerale_1.5L": "500 - 800 XAF",
+      "sodas_canettes": "500 - 700 XAF",
+      "biere_locale_33cl": "700 - 1000 XAF",
+      "cafe_the": "200 - 500 XAF",
+      "snacks_biscuits": "500 - 1000 XAF/personne",
+      "budget_journalier_20_personnes_XAF": "20000 - 40000",
+      "note": "Le budget boissons est souvent oublié. En zone rurale, prévoir des stocks importants d'eau en bouteille."
+    },
+    "alertes_IA": {
+      "scenario_catering_oublie": "ALERTE JAUNE : Budget sans ligne catering = risque de grève de l'équipe ou de démotivation. Action requise : prévoir minimum 3000 XAF/personne/repas.",
+      "scenario_eau": "ALERTE ROUGE : Zone rurale sans eau potable = risque sanitaire majeur. Action requise : stocker 3L d'eau minérale/personne/jour."
+    }
+  }
+}

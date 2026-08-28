@@ -1,0 +1,570 @@
+{
+  "metadata": {
+    "nom": "Dataset Culture, Langues & Tabous - Production Cinéma Cameroun",
+    "version": "1.0.0",
+    "date_generation": "2026-08-12",
+    "source_recherche": "Web search (linguistique, ethnologie, cinéma camerounais) + contexte culturel",
+    "niveau_confiance_global": "Élevé pour les données linguistiques, Moyen pour les tabous (sensibles et variables selon les communautés)",
+    "note_methodologique": "Le Cameroun compte plus de 280 ethnies et langues. Ce dataset couvre les principales zones linguistiques. Les tabous sont hautement contextuels et doivent être vérifiés localement."
+  },
+  "realite_linguistique": {
+    "description": "Un scénario écrit en français académique ne sonne pas vrai dans la rue camerounaise. L'agent IA doit pouvoir 'camérouniser' les dialogues.",
+    "langues_officielles": [
+      "Français",
+      "Anglais"
+    ],
+    "langues_nationales_principales": [
+      {
+        "langue": "Ewondo",
+        "region": "Centre, Sud",
+        "locuteurs_estimes": "1+ million"
+      },
+      {
+        "langue": "Douala",
+        "region": "Littoral",
+        "locuteurs_estimes": "1.5+ million"
+      },
+      {
+        "langue": "Bamiléké (langues du Grassfields)",
+        "region": "Ouest",
+        "locuteurs_estimes": "3+ millions"
+      },
+      {
+        "langue": "Fulfulde (Peulh)",
+        "region": "Nord, Adamaoua, Extrême-Nord",
+        "locuteurs_estimes": "2+ millions"
+      },
+      {
+        "langue": "Bulu",
+        "region": "Sud",
+        "locuteurs_estimes": "500000+"
+      },
+      {
+        "langue": "Bassa",
+        "region": "Littoral (région de Douala)",
+        "locuteurs_estimes": "300000+"
+      },
+      {
+        "langue": "Beti",
+        "region": "Centre, Est",
+        "locuteurs_estimes": "2+ millions"
+      },
+      {
+        "langue": "Kom",
+        "region": "Nord-Ouest",
+        "locuteurs_estimes": "300000+"
+      }
+    ],
+    "pidgin_english": {
+      "description": "Le Cameroonian Pidgin English (ou 'Kamtok') est une lingua franca majeure, surtout en zone anglophone et dans les milieux populaires francophones.",
+      "usage": "Quartiers populaires de Douala, Yaoundé, Buea, Bamenda. Marchés, transports, jeunesse urbaine.",
+      "exemples_dialogue": [
+        {
+          "pidgin": "How you dey?",
+          "francais": "Comment ça va ?",
+          "contexte": "Salutation générale"
+        },
+        {
+          "pidgin": "I dey fine, tanks.",
+          "francais": "Je vais bien, merci.",
+          "contexte": "Réponse à la salutation"
+        },
+        {
+          "pidgin": "Wetin you want?",
+          "francais": "Qu'est-ce que tu veux ?",
+          "contexte": "Marché, commerce"
+        },
+        {
+          "pidgin": "No wahala.",
+          "francais": "Pas de problème.",
+          "contexte": "Réponse rassurante"
+        },
+        {
+          "pidgin": "E don do.",
+          "francais": "C'est fini. / Ça suffit.",
+          "contexte": "Fin d'une action, ou refus"
+        },
+        {
+          "pidgin": "Waka well.",
+          "francais": "Bonne route. / Prends soin de toi.",
+          "contexte": "Au revoir"
+        },
+        {
+          "pidgin": "Na so?",
+          "francais": "C'est comme ça ? / Vraiment ?",
+          "contexte": "Expression de surprise ou de doute"
+        },
+        {
+          "pidgin": "I no sabi.",
+          "francais": "Je ne sais pas.",
+          "contexte": "Ignorance"
+        },
+        {
+          "pidgin": "Make we go.",
+          "francais": "Allons-y.",
+          "contexte": "Invitation à partir"
+        },
+        {
+          "pidgin": "Chop fine.",
+          "francais": "Bon appétit.",
+          "contexte": "Avant un repas"
+        },
+        {
+          "pidgin": "You dey craze?",
+          "francais": "Tu es fou ?",
+          "contexte": "Colère, insulte légère"
+        },
+        {
+          "pidgin": "E be like say...",
+          "francais": "On dirait que... / Il semble que...",
+          "contexte": "Expression d'une supposition"
+        },
+        {
+          "pidgin": "Abeg.",
+          "francais": "S'il te plaît. / Je t'en prie.",
+          "contexte": "Demande polie"
+        },
+        {
+          "pidgin": "Wetin dey happen?",
+          "francais": "Qu'est-ce qui se passe ?",
+          "contexte": "Curiosité, marché, rue"
+        },
+        {
+          "pidgin": "I dey come.",
+          "francais": "J'arrive. / Je reviens.",
+          "contexte": "Départ temporaire"
+        },
+        {
+          "pidgin": "No try me.",
+          "francais": "Ne me cherche pas. / Ne me teste pas.",
+          "contexte": "Mise en garde, tension"
+        },
+        {
+          "pidgin": "E no easy.",
+          "francais": "Ce n'est pas facile. / La vie est dure.",
+          "contexte": "Expression de la difficulté quotidienne"
+        },
+        {
+          "pidgin": "You too much.",
+          "francais": "Tu es trop fort. / Tu déchires.",
+          "contexte": "Compliment"
+        },
+        {
+          "pidgin": "Na who you be?",
+          "francais": "Qui es-tu ? / Tu te prends pour qui ?",
+          "contexte": "Confrontation, défiance"
+        }
+      ],
+      "source": "web_search:2#0 + web_search:2#1 + web_search:2#3"
+    },
+    "camfranglais": {
+      "description": "Langue hybride très populaire chez la jeunesse urbaine camerounaise. Mélange de français, d'anglais, de pidgin, et de langues locales.",
+      "usage": "Jeunes de 12-26 ans, réseaux sociaux, quartiers urbains denses, universités.",
+      "exemples_dialogue": [
+        {
+          "camfranglais": "Tu go où?",
+          "francais": "Tu vas où ?",
+          "contexte": "Quartier, entre amis"
+        },
+        {
+          "camfranglais": "Je vais te see tomorrow.",
+          "francais": "Je vais te voir demain.",
+          "contexte": "Au revoir"
+        },
+        {
+          "camfranglais": "J'ai buy l'affci au bateau.",
+          "francais": "J'ai acheté ça au marché.",
+          "contexte": "Conversation quotidienne"
+        },
+        {
+          "camfranglais": "Il est sorti nayo nayo.",
+          "francais": "Il est sorti très lentement.",
+          "contexte": "Description d'une action"
+        },
+        {
+          "camfranglais": "On va all back au mboa.",
+          "francais": "On va tous rentrer au pays / au village.",
+          "contexte": "Départ en vacances"
+        },
+        {
+          "camfranglais": "Le mbom ci est trop chiche.",
+          "francais": "Ce gars est ingrat.",
+          "contexte": "Critique sociale"
+        },
+        {
+          "camfranglais": "Les ways fort.",
+          "francais": "Les histoires intéressantes. / Les potins.",
+          "contexte": "Conversation de quartier"
+        },
+        {
+          "camfranglais": "Je wanda.",
+          "francais": "Ça m'étonne. / Je suis surpris.",
+          "contexte": "Expression de surprise"
+        },
+        {
+          "camfranglais": "Il fimba à mon cousin.",
+          "francais": "Il ressemble à mon cousin.",
+          "contexte": "Description physique"
+        },
+        {
+          "camfranglais": "Tu oses dire que ton djo le love.",
+          "francais": "Tu oses dire que ton petit ami t'aime.",
+          "contexte": "Discussion entre filles"
+        },
+        {
+          "camfranglais": "C'est le manger là qui me stress.",
+          "francais": "C'est la nourriture qui me stresse. / J'ai faim.",
+          "contexte": "Expression familière"
+        },
+        {
+          "camfranglais": "Fait gaffe, le gars est un mboa.",
+          "francais": "Fais attention, le gars est un villageois / un rustre.",
+          "contexte": "Mise en garde"
+        },
+        {
+          "camfranglais": "On va chop ce soir.",
+          "francais": "On va manger ce soir.",
+          "contexte": "Invitation"
+        },
+        {
+          "camfranglais": "Le boug est trop bête.",
+          "francais": "Le mec est trop bête / trop fort.",
+          "contexte": "Description (sens variable selon le ton)"
+        },
+        {
+          "camfranglais": "Donne-moi le kiki.",
+          "francais": "Donne-moi l'argent.",
+          "contexte": "Argot de la rue"
+        },
+        {
+          "camfranglais": "Elle est trop fresh.",
+          "francais": "Elle est trop belle / stylée.",
+          "contexte": "Compliment"
+        },
+        {
+          "camfranglais": "Le film est trop chaud.",
+          "francais": "Le film est trop bien / trop fort.",
+          "contexte": "Critique cinéma"
+        },
+        {
+          "camfranglais": "Je vais tchatcher ce gars.",
+          "francais": "Je vais parler à ce gars. / Je vais le draguer.",
+          "contexte": "Interaction sociale"
+        },
+        {
+          "camfranglais": "C'est le bordel ici.",
+          "francais": "C'est le chaos ici.",
+          "contexte": "Description d'une situation"
+        },
+        {
+          "camfranglais": "Il faut kiffer la life.",
+          "francais": "Il faut profiter de la vie.",
+          "contexte": "Philosophie de jeunesse"
+        }
+      ],
+      "source": "web_search:2#1 (Wikipedia Camfranglais)"
+    },
+    "expressions_locales_par_region": [
+      {
+        "region": "Yaoundé / Centre (Ewondo/Beti)",
+        "expressions": [
+          {
+            "expression": "Akiéé !",
+            "signification": "Exclamation de surprise ou de douleur",
+            "usage": "Très courant dans la rue"
+          },
+          {
+            "expression": "Mvet",
+            "signification": "Harpe traditionnelle, mais utilisé métaphoriquement pour 'histoire'",
+            "usage": "'Raconte le mvet' = Raconte l'histoire"
+          },
+          {
+            "expression": "Zam",
+            "signification": "Père / Chef (terme de respect)",
+            "usage": "S'adresser à un aîné"
+          }
+        ]
+      },
+      {
+        "region": "Douala / Littoral (Douala/Bassa)",
+        "expressions": [
+          {
+            "expression": "Na woké",
+            "signification": "C'est bon / D'accord (en Douala)",
+            "usage": "Accord, validation"
+          },
+          {
+            "expression": "Mboa",
+            "signification": "Village / Pays natal",
+            "usage": "'Retour au mboa' = Retour au village"
+          },
+          {
+            "expression": "Poto-poto",
+            "signification": "Boue / Quartier insalubre (d'où vient le nom du musicien)",
+            "usage": "Description d'un lieu"
+          }
+        ]
+      },
+      {
+        "region": "Bafoussam / Ouest (Bamiléké)",
+        "expressions": [
+          {
+            "expression": "Chia !",
+            "signification": "Exclamation de surprise",
+            "usage": "Courant chez les Bamiléké"
+          },
+          {
+            "expression": "Nkap",
+            "signification": "L'argent (en langue locale)",
+            "usage": "Argot local"
+          },
+          {
+            "expression": "Fô",
+            "signification": "Chef / Roi (titre de respect)",
+            "usage": "S'adresser au chef de village"
+          }
+        ]
+      },
+      {
+        "region": "Garoua / Nord (Fulfulde)",
+        "expressions": [
+          {
+            "expression": "Jam tan?",
+            "signification": "Comment ça va ? (en Fulfulde)",
+            "usage": "Salutation"
+          },
+          {
+            "expression": "Jam nga",
+            "signification": "Je vais bien (en Fulfulde)",
+            "usage": "Réponse"
+          },
+          {
+            "expression": "Barka",
+            "signification": "Merci (en Fulfulde/Hausa)",
+            "usage": "Remerciement"
+          }
+        ]
+      }
+    ],
+    "feature_IA_dialogue": {
+      "description": "Fonctionnalité pour l'agent IA : proposer de 'camérouniser' les dialogues selon le contexte",
+      "regles": [
+        "Si la scène se passe dans un quartier populaire de Douala ou Yaoundé → proposer du Pidgin English ou du Camfranglais",
+        "Si la scène se passe à l'université ou chez des jeunes urbains → proposer du Camfranglais",
+        "Si la scène se passe dans un village de l'Ouest → proposer des expressions Bamiléké ou du français teinté",
+        "Si la scène se passe dans le Grand Nord → proposer des expressions Fulfulde ou Hausa",
+        "Si la scène se passe dans un marché → mélanger français, pidgin, et expressions locales selon les vendeurs",
+        "Jamais utiliser le français académique pur pour un personnage de rue ou de village"
+      ],
+      "exemple_transformation": {
+        "dialogue_original_francais": "Bonjour monsieur, comment allez-vous ? Je voudrais acheter ce produit. Combien coûte-t-il ?",
+        "version_marche_douala": "Bonjour chief ! How you dey ? I want buy this thing. How much ?",
+        "version_jeune_yaounde": "Yo ! Tu go où ? J'ai buy l'affci ici. C'est combien le kiki ?",
+        "version_village_ouest": "Bonjour Fô. Na woké ? Je voudrais prendre ça. C'est combien ?"
+      }
+    }
+  },
+  "tabous_visuels": {
+    "description": "Sujets, lieux, et pratiques qu'il est mal vu, dangereux, ou interdit de filmer sans précautions extrêmes au Cameroun.",
+    "niveau_risque": {
+      "ROUGE": "Interdiction de fait ou danger physique réel. Nécessite des autorisations de plus haut niveau ou est impossible.",
+      "ORANGE": "Très sensible. Nécessite l'accord des autorités traditionnelles/religieuses et des précautions spécifiques.",
+      "JAUNE": "Sensible. Nécessite l'accord des parties prenantes et un traitement respectueux."
+    },
+    "tabous_par_categorie": [
+      {
+        "categorie": "Rituels et pratiques traditionnelles",
+        "niveau_risque": "ORANGE à ROUGE",
+        "elements": [
+          {
+            "element": "Rituels initiatiques (sociétés secrètes, rites de passage)",
+            "description": "Tournage strictement interdit ou très réglementé. Les rituels initiatiques (ex: chez les Bamiléké, Sawa, ou Bantu) sont sacrés.",
+            "conditions_filmer": "Autorisation du chef spirituel, du chef de village, et parfois du conseil des anciens. Certaines phases sont totalement interdites à la caméra.",
+            "risque_si_non_respect": "Confiscation du matériel, agression physique, malédiction/ostracisme social, procès en sorcellerie",
+            "source": "web_search:11#1 + estime_expert"
+          },
+          {
+            "element": "Cérémonies funéraires traditionnelles",
+            "description": "Les funérailles sont des événements communautaires majeurs mais certains rites sont privés.",
+            "conditions_filmer": "Accord de la famille, du chef de village, et du chef religieux. Ne jamais filmer le corps sans autorisation explicite.",
+            "risque_si_non_respect": "Expulsion, confiscation matériel, conflit avec la communauté"
+          },
+          {
+            "element": "Masques sacrés et objets de culte",
+            "description": "Les masques (Bamiléké, Bamoun, Fang, etc.) ont une dimension spirituelle. Certains ne doivent pas être filmés hors contexte.",
+            "conditions_filmer": "Accord du détenteur du masque, du chef traditionnel. Certains masques ne peuvent être filmés qu'avec leur porteur en action rituelle.",
+            "risque_si_non_respect": "Accusation de profanation, sanctions traditionnelles"
+          },
+          {
+            "element": "Forêts sacrées et lieux de culte",
+            "description": "De nombreuses ethnies ont des forêts sacrées, grottes, ou sources interdites aux non-initiés.",
+            "conditions_filmer": "Autorisation du chef spirituel. Certains lieux sont totalement interdits aux caméras.",
+            "risque_si_non_respect": "Danger physique (gardes traditionnels), malédiction, poursuites"
+          }
+        ]
+      },
+      {
+        "categorie": "Bâtiments et installations gouvernementales",
+        "niveau_risque": "ORANGE à ROUGE",
+        "elements": [
+          {
+            "element": "Palais présidentiel et résidences officielles",
+            "description": "Tournage interdit sans autorisation spéciale du ministère concerné.",
+            "conditions_filmer": "Autorisation du Ministère de la Communication et/ou de la Présidence. Quasi impossible pour les productions indépendantes.",
+            "risque_si_non_respect": "Arrestation, accusation d'espionnage, confiscation matériel"
+          },
+          {
+            "element": "Installations militaires et casernes",
+            "description": "Strictement interdit. Considéré comme atteinte à la sécurité nationale.",
+            "conditions_filmer": "Autorisation du Ministère de la Défense. Très rarement accordée.",
+            "risque_si_non_respect": "Arrestation immédiate, procès, emprisonnement"
+          },
+          {
+            "element": "Bâtiments gouvernementaux sensibles (ministères, tribunaux, prisons)",
+            "description": "Tournage réglementé. Nécessite une autorisation spécifique.",
+            "conditions_filmer": "Autorisation du ministère concerné + accord du directeur de l'établissement.",
+            "risque_si_non_respect": "Arrestation, confiscation, amende"
+          },
+          {
+            "element": "Aéroports et zones aéroportuaires",
+            "description": "Tournage réglementé. Nécessite l'accord de l'aéroport et de la CCAA.",
+            "conditions_filmer": "Autorisation de l'administration aéroportuaire + CCAA si drone.",
+            "risque_si_non_respect": "Arrestation, confiscation"
+          }
+        ]
+      },
+      {
+        "categorie": "Marchés et espaces publics",
+        "niveau_risque": "JAUNE à ORANGE",
+        "elements": [
+          {
+            "element": "Marchés traditionnels (filmer les vendeurs)",
+            "description": "Les vendeurs de marché sont souvent méfiants envers les caméras. Certains craignent que leurs produits soient filmés pour des raisons fiscales ou commerciales.",
+            "conditions_filmer": "Accord du président du marché ou des chefs de section. Payer une 'contribution' symbolique. Annoncer clairement le but du tournage.",
+            "risque_si_non_respect": "Agression verbale, blocage du tournage, confiscation temporaire du matériel par les vendeurs",
+            "source": "estime_expert"
+          },
+          {
+            "element": "Taxis et motos-taxis en action",
+            "description": "Filmer les chauffeurs sans leur accord peut créer des tensions.",
+            "conditions_filmer": "Accord du chauffeur. Préférer louer le véhicule pour le tournage.",
+            "risque_si_non_respect": "Confrontation, refus de circuler"
+          },
+          {
+            "element": "Enfants dans la rue / Écoles",
+            "description": "Filmer des enfants sans l'accord des parents ou de l'école est mal vu.",
+            "conditions_filmer": "Autorisation des parents ou de l'administration scolaire. Ne jamais filmer un enfant seul sans contexte.",
+            "risque_si_non_respect": "Accusation de pédophilie ou de traite, agression de la population"
+          }
+        ]
+      },
+      {
+        "categorie": "Sujets sociopolitiques sensibles",
+        "niveau_risque": "ORANGE à ROUGE",
+        "elements": [
+          {
+            "element": "Crise anglophone (Nord-Ouest et Sud-Ouest)",
+            "description": "Filmer dans les régions du Nord-Ouest et Sud-Ouest est dangereux et politiquement sensible depuis 2016.",
+            "conditions_filmer": "Autorisation des autorités militaires ET des groupes armés selon les zones. Très risqué. Déconseillé sans sécurité professionnelle.",
+            "risque_si_non_respect": "Enlèvement, arrestation, blessure, mort",
+            "source": "web_search:7#2"
+          },
+          {
+            "element": "Manifestations et rassemblements politiques",
+            "description": "Filmer une manifestation sans autorisation est considéré comme un acte politique.",
+            "conditions_filmer": "Autorisation de la préfecture + accord des organisateurs. Couverture presse si média accrédité.",
+            "risque_si_non_respect": "Arrestation, gaz lacrymogène, blessures"
+          },
+          {
+            "element": "Corruption et fonctionnaires en flagrant délit",
+            "description": "Filmer un fonctionnaire en train de commettre un acte de corruption est extrêmement dangereux.",
+            "conditions_filmer": "Caméra cachée uniquement. Risque maximal pour l'équipe.",
+            "risque_si_non_respect": "Agression physique, arrestation, destruction du matériel"
+          },
+          {
+            "element": "Prostitution et lieux associés",
+            "description": "Filmer dans des zones de prostitution sans accord des personnes est problématique.",
+            "conditions_filmer": "Accord des personnes filmées + des 'mamas' ou responsables locaux. Anonymisation obligatoire.",
+            "risque_si_non_respect": "Agression, vol, arrestation"
+          }
+        ]
+      },
+      {
+        "categorie": "Religion",
+        "niveau_risque": "JAUNE à ORANGE",
+        "elements": [
+          {
+            "element": "Mosquées pendant la prière",
+            "description": "Filmer l'intérieur d'une mosquée pendant la prière est interdit ou très mal vu.",
+            "conditions_filmer": "Accord de l'imam et des fidèles. Restreindre aux extérieurs ou aux moments hors prière.",
+            "risque_si_non_respect": "Expulsion, agression"
+          },
+          {
+            "element": "Églises pendant le culte",
+            "description": "Moins restrictif que les mosquées, mais nécessite l'accord du pasteur.",
+            "conditions_filmer": "Accord du pasteur. Certains cultes évangéliques acceptent volontiers les caméras.",
+            "risque_si_non_respect": "Expulsion polie"
+          },
+          {
+            "element": "Cimetières et tombes",
+            "description": "Filmer des tombes ou des enterrements est sensible dans de nombreuses cultures camerounaises.",
+            "conditions_filmer": "Accord de la famille et des autorités religieuses. Ne jamais filmer un visage de défunt sans autorisation.",
+            "risque_si_non_respect": "Conflit avec la famille, accusations de sorcellerie"
+          }
+        ]
+      }
+    ],
+    "alertes_IA": {
+      "scenario_rituel_sacre": "ALERTE ROUGE : Le scénario mentionne un rituel traditionnel sans précaution. Action requise : contacter le chef spirituel ET le chef de village AVANT d'écrire la scène. Certains rituels sont totalement interdits à la caméra.",
+      "scenario_marche": "ALERTE JAUNE : Scène de marché sans accord des vendeurs. Action requise : prévoir une 'contribution' et l'accord du président du marché. Budget : 20000-50000 XAF.",
+      "scenario_crise_anglophone": "ALERTE ROUGE : Tournage dans le Nord-Ouest/Sud-Ouest sans sécurité = risque de vie. Action requise : consulter les avis de voyage officiels et engager une société de sécurité locale. Alternative : reconstituer la scène dans une autre région.",
+      "scenario_enfants": "ALERTE JAUNE : Scène avec des enfants sans protocole. Action requise : obtenir l'autorisation écrite des parents ou de l'école. Prévoir un tuteur sur le plateau.",
+      "scenario_batiment_gouvernemental": "ALERTE ORANGE : Tournage devant un bâtiment gouvernemental sans autorisation. Action requise : vérifier si le bâtiment est sensible. Si oui, demander l'autorisation ou changer de lieu."
+    }
+  },
+  "authenticite_culturelle": {
+    "description": "Pour qu'un film camerounais sonne vrai, certains détails culturels sont essentiels.",
+    "details_authentiques": [
+      {
+        "detail": "Les salutations sont longues et protocolaires",
+        "explication": "On ne dit pas juste 'Bonjour'. On demande des nouvelles de la famille, du travail, de la santé. Cela peut durer plusieurs minutes.",
+        "usage": "Toute rencontre entre personnes qui se connaissent"
+      },
+      {
+        "detail": "Le respect de l'aîné est absolu",
+        "explication": "Un jeune ne contredit jamais un aîné en public. Il peut s'exprimer avec des euphémismes ou par l'intermédiaire d'un tiers.",
+        "usage": "Scènes familiales, village, quartier"
+      },
+      {
+        "detail": "La nourriture est sociale",
+        "explication": "Manger seul est mal vu. On partage. On offre à l'autre avant de manger soi-même. Le repas est un moment de discussion.",
+        "usage": "Scènes de repas familiaux, de village"
+      },
+      {
+        "detail": "L'argent ne se discute pas ouvertement",
+        "explication": "Dans de nombreuses cultures, discuter ouvertement de l'argent est vulgaire. On utilise des euphémismes ou des gestes discrets.",
+        "usage": "Transactions, négociations"
+      },
+      {
+        "detail": "La polygamie et la famille élargie",
+        "explication": "La famille camerounaise est souvent élargie. Les oncles, tantes, cousins jouent un rôle parental. La polygamie existe encore dans certaines régions.",
+        "usage": "Scènes familiales, dynamiques de pouvoir"
+      },
+      {
+        "detail": "Le 'tontine' et la solidarité",
+        "explication": "Les tontines (associations d'épargne rotative) sont très répandues. La solidarité communautaire est forte.",
+        "usage": "Scènes de quartier, de marché, de village"
+      },
+      {
+        "detail": "La relation à la mort",
+        "explication": "La mort n'est pas une fin mais une transition. Les funérailles sont des célébrations. Le deuil peut durer des mois avec des rituels.",
+        "usage": "Scènes de deuil, de funérailles"
+      },
+      {
+        "detail": "La spiritualité ambiante",
+        "explication": "Le surnaturel est réel pour beaucoup de Camerounais. Les rêves, les signes, les esprits ancestraux font partie du quotidien.",
+        "usage": "Scènes de nuit, de village, de décision"
+      }
+    ]
+  }
+}

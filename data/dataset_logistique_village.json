@@ -1,0 +1,283 @@
+{
+  "metadata": {
+    "nom": "Dataset Logistique Village & Terrain - Cameroun",
+    "version": "1.0.0",
+    "date_generation": "2026-08-12",
+    "source_recherche": "Web search multi-sources + contexte terrain",
+    "niveau_confiance_global": "Moyen à Élevé (sources partielles, complété par expertise terrain)",
+    "devise_reference": "XAF (FCFA)",
+    "taux_change_approximatif": {
+      "EUR": 655.957,
+      "USD": 600.0
+    },
+    "note_methodologique": "Les données marquées 'estime_expert' proviennent de l'analyse contextuelle du marché camerounais. Les données 'source_web' proviennent de recherches documentées."
+  },
+  "protocole_chefferie": {
+    "description": "Dans 90% des villages camerounais, le tournage nécessite l'accord du Chef de Village ou des notables.",
+    "applicabilite": "Obligatoire dans les zones rurales, fortement recommandé en périphérie urbaine",
+    "etapes_protocole": [
+      {
+        "ordre": 1,
+        "nom": "Premier contact",
+        "description": "Arrivée au village avec un intermédiaire de confiance (guide local, notable, ou membre de la famille du chef)",
+        "duree_estimee_jours": 0.5,
+        "source": "estime_expert"
+      },
+      {
+        "ordre": 2,
+        "nom": "Présentation au Chef de Village (Fon, Sultan, ou Chef traditionnel selon la région)",
+        "description": "Explication du projet, de la durée, du nombre de personnes, des lieux exacts de tournage",
+        "duree_estimee_jours": 1,
+        "source": "estime_expert"
+      },
+      {
+        "ordre": 3,
+        "nom": "Consultation des notables et conseil des anciens",
+        "description": "Le chef consulte son conseil. Délai variable selon la complexité du projet et la saison",
+        "duree_estimee_jours": "1-3",
+        "source": "estime_expert"
+      },
+      {
+        "ordre": 4,
+        "nom": "Délivrance de l'accord écrit ou verbal",
+        "description": "Obtention d'une lettre d'accord ou d'un laissez-passer du chef",
+        "duree_estimee_jours": 0.5,
+        "source": "estime_expert"
+      }
+    ],
+    "duree_totale_estimee_jours": {
+      "minimum": 2,
+      "moyenne": 3,
+      "maximum": 7,
+      "note": "Peut être réduit à 1 jour si relations préalables établies, ou s'étendre à 2 semaines si projet controversé"
+    },
+    "cadeaux_protocolaires": [
+      {
+        "type": "Noix de kola (Kola nuts)",
+        "description": "Cadeau traditionnel obligatoire dans les chefferies du Nord, Ouest, Nord-Ouest, et Sud-Ouest",
+        "cout_estime_XAF": "5000 - 20000",
+        "cout_estime_EUR": "7.60 - 30.50",
+        "note": "Quantité variable selon le rang du chef et le nombre de notables présents",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Boissons traditionnelles (vin de palme, bière locale, sodas)",
+        "description": "Offrande de boissons pour le conseil des notables",
+        "cout_estime_XAF": "15000 - 50000",
+        "cout_estime_EUR": "22.90 - 76.20",
+        "note": "Le vin de palme (mimbo) est très valorisé en zone forestière ; la bière en zone savane",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Enveloppe financière (don au chef)",
+        "description": "Contribution financière au développement du village, présentée de manière protocolaire",
+        "cout_estime_XAF": {
+          "petit_village": "50000 - 100000",
+          "village_moyen": "100000 - 300000",
+          "grande_chefferie": "300000 - 1000000+"
+        },
+        "cout_estime_EUR": {
+          "petit_village": "76 - 152",
+          "village_moyen": "152 - 457",
+          "grande_chefferie": "457 - 1524+"
+        },
+        "note": "Le montant dépend de la notoriété du chef, de la durée du tournage, et de l'impact sur le village",
+        "source": "estime_expert"
+      },
+      {
+        "type": "Cadeaux matériels (tissus pagne, chapeaux, objets de prestige)",
+        "description": "Cadeaux symboliques pour le chef et sa famille",
+        "cout_estime_XAF": "20000 - 100000",
+        "cout_estime_EUR": "30.50 - 152.40",
+        "note": "Le pagne (wax) est un cadeau très apprécié, surtout dans les chefferies Bamiléké et Bamoun",
+        "source": "estime_expert"
+      }
+    ],
+    "regles_comportementales": [
+      "Ne jamais filmer le chef sans son accord explicite",
+      "Respecter les lieux sacrés (forêts sacrées, grottes, sources, tombes royales)",
+      "Ne pas tourner pendant les cérémonies religieuses sans autorisation",
+      "S'habiller de manière sobre et respectueuse (éviter shorts, débardeurs)",
+      "Accepter l'assignation d'un 'guide du village' désigné par le chef",
+      "Prévoir une séance de visionnage du film pour le chef et les notables (si film sur le village)",
+      "Ne jamais négocier directement avec le chef sans intermédiaire",
+      "S'adresser au chef par son titre protocolaire (Sa Majesté, Fon, Sultan, Nkum, etc.)"
+    ],
+    "alertes_IA": {
+      "scenario_village_sans_accord": "ALERTE ROUGE : Tournage en zone rurale sans protocole chefferie = risque de blocage, confiscation matériel, ou agression. Action requise : contacter le chef AVANT d'arriver sur place.",
+      "scenario_chefferie_bamileke": "NOTE : Les chefferies Bamiléké (Ouest) ont des protocoles très structurés. Prévoir un délai de 3-7 jours minimum.",
+      "scenario_chefferie_fulani": "NOTE : Les chefferies Peulh/Fulani (Nord) peuvent exiger des cadeaux de bétail symboliques ou des contributions au développement de l'élevage."
+    }
+  },
+  "realite_energetique": {
+    "description": "Le réseau électrique ENEO n'est pas stable en dehors des centres-villes. Les coupures sont fréquentes et imprévisibles.",
+    "fiabilite_reseau": {
+      "yaounde_centre": "Moyenne (coupures 2-4h/jour en saison sèche, plus fréquentes en saison des pluies)",
+      "douala_centre": "Moyenne à Faible (surcharge du réseau, coupures fréquentes)",
+      "villes_secondaires": "Faible (coupures 4-8h/jour)",
+      "zones_rurales": "Très faible à inexistant (pas de raccordement ENEO dans de nombreux villages)"
+    },
+    "groupes_electrogenes": {
+      "necessite": "OBLIGATOIRE pour tout tournage en zone rurale ou semi-urbaine",
+      "types_disponibles": [
+        {
+          "type": "Groupe essence portable (2-5 kVA)",
+          "usage": "Petit matériel (chargement batteries, éclairage LED)",
+          "prix_location_jour_XAF": "15000 - 30000",
+          "prix_location_jour_EUR": "22.90 - 45.70",
+          "source": "estime_expert"
+        },
+        {
+          "type": "Groupe diesel moyen (10-20 kVA)",
+          "usage": "Éclairage moyen, son, petit matériel vidéo",
+          "prix_location_jour_XAF": "35000 - 70000",
+          "prix_location_jour_EUR": "53.40 - 106.80",
+          "source": "estime_expert"
+        },
+        {
+          "type": "Groupe diesel industriel (30-50 kVA)",
+          "usage": "Tournage complet (caméras, éclairage, son, poste de monitoring)",
+          "prix_location_jour_XAF": "80000 - 150000",
+          "prix_location_jour_EUR": "122 - 228.70",
+          "source": "estime_expert"
+        },
+        {
+          "type": "Groupe diesel lourd (100+ kVA)",
+          "usage": "Grosse production (éclairage cinéma, multiples caméras, climatisation)",
+          "prix_location_jour_XAF": "200000 - 400000",
+          "prix_location_jour_EUR": "305 - 610",
+          "source": "estime_expert"
+        }
+      ],
+      "cout_carburant_12h_tournage": {
+        "description": "Estimation du carburant nécessaire pour 12h de tournage continu",
+        "essence_5kVA": {
+          "litres_12h": "8 - 12",
+          "cout_XAF": "6400 - 9600",
+          "cout_EUR": "9.75 - 14.60"
+        },
+        "diesel_20kVA": {
+          "litres_12h": "15 - 25",
+          "cout_XAF": "12000 - 20000",
+          "cout_EUR": "18.30 - 30.50"
+        },
+        "diesel_50kVA": {
+          "litres_12h": "40 - 60",
+          "cout_XAF": "32000 - 48000",
+          "cout_EUR": "48.80 - 73.20"
+        },
+        "diesel_100kVA": {
+          "litres_12h": "80 - 120",
+          "cout_XAF": "64000 - 96000",
+          "cout_EUR": "97.60 - 146.40"
+        },
+        "prix_carburant_reference_XAF_par_litre": {
+          "essence": "800",
+          "diesel": "800"
+        },
+        "note": "Prix carburant fluctuant. Vérifier le prix au moment du tournage. Prévoir une marge de 20%.",
+        "source": "estime_expert"
+      },
+      "transport_groupe_electrogene": {
+        "description": "Coût de transport du groupe jusqu'au lieu de tournage",
+        "yaounde_peripherie_50km": {
+          "camionnette_pickup": "15000 - 30000 XAF",
+          "camion_5t": "30000 - 50000 XAF"
+        },
+        "yaounde_region_150km": {
+          "camionnette_pickup": "40000 - 70000 XAF",
+          "camion_5t": "70000 - 120000 XAF"
+        },
+        "douala_peripherie_50km": {
+          "camionnette_pickup": "15000 - 30000 XAF",
+          "camion_5t": "30000 - 50000 XAF"
+        },
+        "douala_region_150km": {
+          "camionnette_pickup": "40000 - 70000 XAF",
+          "camion_5t": "70000 - 120000 XAF"
+        },
+        "note": "Les routes en mauvais état peuvent multiplier le coût par 1.5 à 2. Prévoir un camion 4x4 pour les zones difficiles.",
+        "source": "estime_expert"
+      },
+      "alertes_IA": {
+        "scenario_sans_groupe": "ALERTE ROUGE : Tournage en zone rurale sans groupe électrogène de secours = risque d'interruption totale. Action requise : louer un groupe de puissance supérieure de 30% à la consommation estimée.",
+        "scenario_saison_pluies": "NOTE : En saison des pluies, les coupures ENEO sont plus fréquentes. Prévoir un groupe de secours même en centre-ville."
+      }
+    }
+  },
+  "logistique_routiere": {
+    "description": "Google Maps sous-estime systématiquement les temps de trajet au Cameroun. Les contrôles, l'état des routes, et les embouteillages augmentent considérablement les durées.",
+    "etat_reseau_routier": {
+      "statistique_officielle_2023": "41% du réseau routier en mauvais état, 58% en bon ou moyen état sur 121 000 km",
+      "source": "web_search:7#1",
+      "note": "Les routes régionales et communales connaissent des points de rupture, notamment en saison des pluies"
+    },
+    "temps_trajet_reels": [
+      {
+        "trajet": "Douala → Yaoundé",
+        "distance_km": 240,
+        "temps_google_maps": "3h30 - 4h",
+        "temps_reel_estime": "5h - 7h",
+        "facteurs_retard": "Contrôles routiers fréquents (Gendarmerie, Police, Douanes), embouteillages à l'entrée de Douala et Yaoundé, état de la route Nationale 3 (travaux en cours 2024-2025)",
+        "passabilite_camion_lourd_saison_pluies": "Possible mais lent. Risque de bourbier sur certaines sections. Prévoir 8-10h.",
+        "source": "web_search:1#2 + estime_expert"
+      },
+      {
+        "trajet": "Yaoundé → Bafoussam",
+        "distance_km": 320,
+        "temps_google_maps": "5h - 5h30",
+        "temps_reel_estime": "7h - 9h",
+        "facteurs_retard": "Route sinueuse en montagne (Ouest), virages serrés, brouillard matinal, nombreux villages traversés",
+        "passabilite_camion_lourd_saison_pluies": "DIFFICILE. Route glissante, risque d'éboulement. Camion lourd déconseillé en saison des pluies. Prévoir 10-12h ou itinéraire alternatif.",
+        "source": "estime_expert"
+      },
+      {
+        "trajet": "Douala → Kribi",
+        "distance_km": 165,
+        "temps_google_maps": "2h30 - 3h",
+        "temps_reel_estime": "3h30 - 5h",
+        "facteurs_retard": "Route relativement bonne mais nombreux checkpoints, circulation dense vers Edéa, travaux sur la route côtière",
+        "passabilite_camion_lourd_saison_pluies": "Possible. Route bitumée en bon état général. Prévoir 5-6h.",
+        "source": "estime_expert"
+      },
+      {
+        "trajet": "Yaoundé → Bertoua (Est)",
+        "distance_km": 340,
+        "temps_google_maps": "5h - 6h",
+        "temps_reel_estime": "7h - 9h",
+        "facteurs_retard": "Route en terre sur de longues sections, nombreux villages, checkpoints",
+        "passabilite_camion_lourd_saison_pluies": "TRÈS DIFFICILE. Pistes boueuses, gués à traverser. Camion lourd fortement déconseillé. Prévoir 12h+ ou reporter.",
+        "source": "estime_expert"
+      },
+      {
+        "trajet": "Douala → Bamenda (Nord-Ouest)",
+        "distance_km": 370,
+        "temps_google_maps": "6h - 7h",
+        "temps_reel_estime": "8h - 12h",
+        "facteurs_retard": "Route montagneuse, checkpoints multiples, contexte sécuritaire sensible (crise anglophone), état variable",
+        "passabilite_camion_lourd_saison_pluies": "DANGEREUX / DÉCONSEILLÉ. Risque sécuritaire + conditions routières. Consulter les avis de voyage officiels.",
+        "source": "estime_expert + web_search:7#2"
+      },
+      {
+        "trajet": "Yaoundé → Garoua (Nord)",
+        "distance_km": 1150,
+        "temps_google_maps": "14h - 16h",
+        "temps_reel_estime": "18h - 24h (2 jours recommandés)",
+        "facteurs_retard": "Longue distance, état variable des routes, nombreux checkpoints, fatigue conducteur",
+        "passabilite_camion_lourd_saison_pluies": "TRÈS DIFFICILE. Pistes du Nord non bitumées. Recommandé : convoi avec 4x4 d'escorte. Prévoir 2-3 jours.",
+        "source": "estime_expert"
+      }
+    ],
+    "recommandations_transport_materiel": {
+      "type_vehicule_recommande": "Camion 4x4 (Mercedes Unimog, Toyota Land Cruiser pick-up) ou camionnette 4x4 robuste",
+      "saison_pluies": "Éviter les déplacements de matériel lourd en zone rurale. Si obligatoire : convoi avec 2 véhicules minimum, treuil, chaînes, pneus tout-terrain",
+      "nuit": "Déconseillé formellement. Risque d'insécurité, absence d'éclairage, animaux sur la route",
+      "source": "web_search:7#2"
+    },
+    "alertes_IA": {
+      "scenario_planning_serre": "ALERTE ROUGE : Planning basé sur Google Maps sans marge = retard garanti. Action requise : ajouter 40-60% de marge sur tous les temps de trajet inter-régionaux.",
+      "scenario_saison_pluies": "ALERTE ROUGE : Transport de matériel lourd en saison des pluies sans itinéraire de secours = risque de blocage. Action requise : prévoir un itinéraire alternatif et un hébergement de secours.",
+      "scenario_nuit": "ALERTE ROUGE : Déplacement de matériel de nuit = risque élevé d'accident et d'agression. Action requise : planifier les déplacements en journée uniquement."
+    }
+  }
+}

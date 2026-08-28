@@ -1,0 +1,302 @@
+{
+  "metadata": {
+    "nom": "Dataset Frictions Administratives & Légales - Tournage Cameroun",
+    "version": "1.0.0",
+    "date_generation": "2026-08-12",
+    "source_recherche": "Web search (MINAC, CCAA, lois camerounaises) + contexte juridique",
+    "niveau_confiance_global": "Moyen à Élevé (textes légaux référencés, mais pratiques administratives variables)",
+    "devise_reference": "XAF (FCFA)",
+    "note_methodologique": "Ce dataset est basé sur la loi n°88/017 du 16 décembre 1988, les textes de la CCAA, et les pratiques observées. Les délais administratifs au Cameroun sont souvent imprévisibles."
+  },
+  "autorisations_MINAC": {
+    "description": "Autorisations délivrées par le Ministère des Arts et de la Culture (MINAC) pour l'activité cinématographique au Cameroun.",
+    "cadre_legal": {
+      "loi_principale": "Loi n°88/017 du 16 décembre 1988 fixant l'orientation de l'activité cinématographique",
+      "article_cle": "Article 10 : Aucun film cinématographique ne peut être distribué au Cameroun sans autorisation préalable du ministre des Arts et de la Culture, après avis de la commission de censure",
+      "source": "web_search:9#0 + web_search:9#2"
+    },
+    "types_autorisations": [
+      {
+        "type": "Autorisation de tournage (Film/Documentaire/Série)",
+        "autorite": "MINAC - Direction du Cinéma et de la Production Audiovisuelle (DCPA)",
+        "delai_theorique": "4 à 8 semaines",
+        "delai_pratique": "6 à 12 semaines (parfois plus)",
+        "documents_requis": [
+          "Lettre de demande adressée au Ministre des Arts et de la Culture",
+          "Synopsis ou scénario complet du projet",
+          "Fiche technique détaillée (équipement, équipe, durée, lieux)",
+          "Registre de commerce ou équivalent (si société de production)",
+          "Attestation d'assurance responsabilité civile",
+          "Copie des passeports de l'équipe étrangère",
+          "Lettre d'engagement de respect des lois camerounaises",
+          "Contrats de location des lieux de tournage (si déjà identifiés)"
+        ],
+        "frais_estimes_XAF": "50000 - 200000",
+        "frais_estimes_EUR": "76 - 305",
+        "note": "Les délais peuvent être raccourcis si l'on a des relations au ministère ou si l'on passe par un fixer/régisseur expérimenté.",
+        "source": "estime_expert + web_search:9#1"
+      },
+      {
+        "type": "Visa d'exploitation (pour diffusion/distribution)",
+        "autorite": "MINAC - Commission nationale de contrôle des films (Commission de censure)",
+        "delai_theorique": "2 à 4 semaines",
+        "delai_pratique": "4 à 8 semaines",
+        "documents_requis": [
+          "Copie du film finalisé",
+          "Fiche technique et artistique",
+          "Demande de visa d'exploitation",
+          "Synopsis final",
+          "Contrat de distribution (si applicable)"
+        ],
+        "frais_estimes_XAF": "30000 - 100000",
+        "frais_estimes_EUR": "46 - 152",
+        "note": "La censure peut demander des coupes ou des modifications. Les sujets politiques sensibles, la violence explicite, ou la nudité peuvent être problématiques.",
+        "source": "web_search:9#0 + estime_expert"
+      },
+      {
+        "type": "Autorisation de tournage pour production étrangère",
+        "autorite": "MINAC + Ministère des Relations Extérieures (MRE)",
+        "delai_theorique": "6 à 10 semaines",
+        "delai_pratique": "8 à 16 semaines",
+        "documents_requis": [
+          "Tous les documents de l'autorisation standard",
+          "Lettre d'invitation d'un partenaire camerounais (fixer, société de production locale)",
+          "Contrat de co-production ou de prestation de services",
+          "Attestation de vaccination (fièvre jaune, polio obligatoires)",
+          "Visa d'entrée pour l'équipe (à demander à l'ambassade du Cameroun à l'étranger, délai 1-2 semaines)"
+        ],
+        "frais_estimes_XAF": "100000 - 500000",
+        "frais_estimes_EUR": "152 - 762",
+        "note": "Les productions étrangères doivent impérativement avoir un partenaire local. Le fixer local est souvent le garant de la demande.",
+        "source": "web_search:6#0 + estime_expert"
+      }
+    ],
+    "conseils_pratiques": [
+      "Déposer la demande MINIMUM 3 mois avant le début du tournage",
+      "Passer par un fixer/régisseur local qui connaît les procédures et les interlocuteurs",
+      "Prévoir un budget 'frais de dossier' et 'frais de suivi' (déplacements, relances)",
+      "Obtenir un accusé de réception pour chaque dépôt de document",
+      "Maintenir un contact régulier avec le bureau du Ministère (relances téléphoniques)",
+      "Prévoir une marge de 4 semaines supplémentaires par rapport au délai annoncé"
+    ],
+    "alertes_IA": {
+      "scenario_delai_court": "ALERTE ROUGE : Demande MINAC déposée moins de 8 semaines avant le tournage = risque de non-obtention à temps. Action requise : contacter un fixer pour accélération ou reporter le tournage.",
+      "scenario_sans_fixer": "ALERTE ROUGE : Production étrangère sans partenaire local = refus quasi-certain de l'autorisation. Action requise : identifier et contractualiser un fixer/régisseur camerounais AVANT le dépôt de la demande.",
+      "scenario_film_sensible": "ALERTE JAUNE : Film abordant des sujets politiques, la crise anglophone, ou la corruption = risque de censure ou de refus. Action requise : anticiper les coupes demandées ou envisager un tournage discret (au risque de sanctions)."
+    }
+  },
+  "reglementation_drones": {
+    "description": "Le Cameroun a une réglementation stricte sur les drones. L'utilisation sans autorisation est illégale et peut entraîner des sanctions sévères.",
+    "niveau_risque_global": "TRÈS ÉLEVÉ",
+    "cadre_legal": {
+      "loi_principale": "Loi 2013/010 du 24 juillet 2013 portant régime de l'aviation civile au Cameroun",
+      "instruction_cles": "Instruction N°000012/C/CCAA/DG/DRCA du 18 novembre 2016 (CCAA) fixant les modalités d'autorisation d'utilisation d'aéronefs télépilotés",
+      "arrête_navigabilite": "Arrêté 221/MINT du 04 juin 2013 relatif à la navigabilité des aéronefs civils",
+      "source": "web_search:9#3"
+    },
+    "regles_obligatoires": [
+      "Obtenir une autorisation préalable de la CCAA pour CHAQUE opération ponctuelle",
+      "Déposer la demande AU MOINS 15 jours avant la date prévue de l'opération",
+      "Fournir : certificat de navigabilité du drone, manuel d'utilisation, plan de vol, attestation d'assurance",
+      "Respecter les zones interdites : aéroports, installations militaires, bâtiments publics, sites sensibles",
+      "Maintenir le drone en vue directe (VLOS)",
+      "Ne pas dépasser 150 mètres d'altitude",
+      "Ne pas voler de nuit ou par mauvais temps",
+      "Ne pas survoler des personnes, animaux, ou véhicules sans consentement",
+      "Respecter la législation sur la protection des données personnelles"
+    ],
+    "zones_interdites": [
+      "Aéroports et zones d'approche (5km minimum)",
+      "Installations militaires et zones de défense",
+      "Palais présidentiel et bâtiments gouvernementaux sensibles",
+      "Sites pétroliers et industriels stratégiques",
+      "Zones frontalières sensibles (Nord, Extrême-Nord, Est)",
+      "Parcs nationaux sans autorisation spécifique du MINFOF"
+    ],
+    "sanctions": [
+      "Retrait ou suspension de l'autorisation",
+      "Saisie ou destruction du drone",
+      "Amende administrative",
+      "Indemnisation en cas de dommages",
+      "Peine d'emprisonnement possible (en cas d'espionnage ou atteinte à la sécurité nationale)"
+    ],
+    "delai_pratique": {
+      "theorique": "15 jours minimum",
+      "pratique": "1 à 3 mois (parfois 6 mois pour les zones sensibles)",
+      "note": "L'autorisation militaire/presidentialle pour les zones sensibles peut prendre 6 mois ou plus, et est souvent refusée."
+    },
+    "alternatives_drones": [
+      {
+        "alternative": "Grue de cinéma / Jib",
+        "cout_jour_XAF": "30000 - 60000",
+        "cout_jour_EUR": "46 - 91",
+        "avantages": [
+          "Légal sans autorisation spéciale",
+          "Plan stable",
+          "Contrôle total"
+        ],
+        "inconvenients": [
+          "Portée limitée (3-6m)",
+          "Nécessite un opérateur",
+          "Encombrant"
+        ]
+      },
+      {
+        "alternative": "Perche télescopique (12m+)",
+        "cout_jour_XAF": "15000 - 30000",
+        "cout_jour_EUR": "23 - 46",
+        "avantages": [
+          "Légal",
+          "Léger",
+          "Rapide à installer"
+        ],
+        "inconvenients": [
+          "Mouvement limité",
+          "Nécessite un plan plat",
+          "Pas de mouvement dynamique"
+        ]
+      },
+      {
+        "alternative": "Tournage depuis un bâtiment élevé / toit",
+        "cout_jour_XAF": "0 - 50000",
+        "cout_jour_EUR": "0 - 76",
+        "avantages": [
+          "Gratuit si accès autorisé",
+          "Point de vue élevé naturel"
+        ],
+        "inconvenients": [
+          "Position fixe",
+          "Dépend de l'accès au bâtiment",
+          "Angle limité"
+        ]
+      },
+      {
+        "alternative": "Échafaudage local / toit de pick-up (Système D)",
+        "cout_jour_XAF": "5000 - 20000",
+        "cout_jour_EUR": "7.60 - 30.50",
+        "avantages": [
+          "Très économique",
+          "Disponible partout"
+        ],
+        "inconvenients": [
+          "Hauteur limitée (2-3m)",
+          "Risque sécurité",
+          "Mouvement impossible"
+        ]
+      },
+      {
+        "alternative": "Location d'hélicoptère (avec autorisation CCAA spéciale)",
+        "cout_jour_XAF": "500000 - 2000000",
+        "cout_jour_EUR": "762 - 3050",
+        "avantages": [
+          "Plans aériens légaux",
+          "Haute qualité"
+        ],
+        "inconvenients": [
+          "Très cher",
+          "Autorisation complexe",
+          "Bruit important"
+        ]
+      }
+    ],
+    "alertes_IA": {
+      "scenario_plan_drone": "ALERTE ROUGE : Le scénario mentionne un 'plan de drone'. Alternative requise : Grue, Perche, ou tournage depuis un bâtiment élevé. Drone illégal sans autorisation spéciale de la CCAA (délai 1-3 mois, souvent refusée pour les zones sensibles).",
+      "scenario_drone_etranger": "ALERTE ROUGE : Équipe étrangère avec drone personnel = saisie quasi-certaine à la douane ou au premier vol. Action requise : ne PAS importer de drone sans autorisation CCAA préalable."
+    }
+  },
+  "checkpoints_police_gendarmerie": {
+    "description": "Les checkpoints sont fréquents sur l'ensemble du territoire camerounais. Le transport de matériel de cinéma (flight cases, caméras, drones) attire systématiquement l'attention.",
+    "frequence_checkpoints": {
+      "interurbain": "Tous les 30-80 km en moyenne",
+      "zone_sensible": "Tous les 10-20 km (Nord-Ouest, Sud-Ouest, Extrême-Nord)",
+      "urbain": "Contrôles mobiles fréquents à Yaoundé et Douala"
+    },
+    "forces_en_jeu": [
+      {
+        "force": "Police nationale",
+        "uniforme": "Bleu marine, véhicules blancs",
+        "attitude": "Variable. Certains contrôles sont routiniers, d'autres cherchent des infractions.",
+        "risque_matériel": "Moyen. Peu familiarisés avec le matériel cinéma, peuvent demander des explications détaillées."
+      },
+      {
+        "force": "Gendarmerie nationale",
+        "uniforme": "Kaki, véhicules kaki/blanc",
+        "attitude": "Plus structurée. Contrôles systématiques des documents.",
+        "risque_matériel": "Élevé. Plus enclins à inspecter le contenu des véhicules et à vérifier les autorisations.",
+        "source": "web_search:8#1"
+      },
+      {
+        "force": "Douanes",
+        "uniforme": "Bleu clair",
+        "attitude": "Contrôles aux frontières et zones économiques spéciales.",
+        "risque_matériel": "Très élevé. Vérification stricte de l'origine et de la déclaration du matériel."
+      }
+    ],
+    "documents_obligatoires_transport": [
+      "Ordres de mission pour chaque membre de l'équipe (avec photo, fonction, et durée de mission)",
+      "Lettres de production officielles (sur papier à en-tête de la production)",
+      "Autorisation de tournage MINAC (copie)",
+      "Liste détaillée du matériel transporté (avec numéros de série pour le matériel importé)",
+      "Attestation d'assurance du matériel",
+      "Cartes grises des véhicules de production",
+      "Permis de conduire international (pour les étrangers)",
+      "Passeports en règle avec visa valide"
+    ],
+    "marge_temps_checkpoints": {
+      "description": "Temps additionnel à prévoir pour les contrôles lors des déplacements",
+      "par_checkpoint": "10 - 45 minutes",
+      "trajet_yaounde_douala": "+1h30 à +2h30 de retard total",
+      "trajet_regional": "+30min à +1h30 selon le nombre de checkpoints",
+      "note": "Les contrôles peuvent s'allonger considérablement si le matériel est inhabituel ou si les documents sont incomplets."
+    },
+    "conduite_recommandee": [
+      "Toujours rester courtois et coopératif",
+      "Ne jamais argumenter ou contester un contrôle sur place",
+      "Avoir une copie des documents pour éviter la confiscation temporaire",
+      "Prévoir un régisseur/francophone pour gérer les échanges",
+      "Ne jamais filmer les forces de l'ordre sans autorisation explicite",
+      "Prévoir un 'fond de roulement' en cash pour les éventualités (sans reconnaître de corruption)"
+    ],
+    "alertes_IA": {
+      "scenario_sans_documents": "ALERTE ROUGE : Transport de matériel cinéma sans ordres de mission et lettres de production = risque de saisie du matériel ou d'arrestation temporaire. Action requise : préparer les documents AVANT tout déplacement interurbain.",
+      "scenario_filming_checkpoint": "ALERTE ROUGE : Filmer un checkpoint de police/gendarmerie = risque de confiscation du matériel, arrestation, et accusation d'espionnage. Action requise : ÉTEINDRE TOUTES LES CAMÉRAS aux checkpoints.",
+      "scenario_nuit": "ALERTE ROUGE : Déplacement de matériel de nuit = risque maximal aux checkpoints (suspicion accrue) + risque d'insécurité. Action requise : planifier les déplacements en journée uniquement."
+    }
+  },
+  "autres_frictions": {
+    "visa_travail": {
+      "description": "Les équipes étrangères doivent obtenir un visa d'entrée au Cameroun",
+      "documents_requis": [
+        "Passeport valide (6 mois minimum)",
+        "Lettre d'invitation d'un partenaire camerounais",
+        "Certificat de vaccination fièvre jaune",
+        "Certificat de vaccination polio",
+        "Photo d'identité",
+        "Preuve de moyens financiers"
+      ],
+      "delai": "1 à 2 semaines (parfois plus selon l'ambassade)",
+      "frais_estimes_XAF": "50000 - 150000",
+      "frais_estimes_EUR": "76 - 229",
+      "source": "web_search:6#0"
+    },
+    "assurances": {
+      "description": "Assurances obligatoires et recommandées",
+      "obligatoires": [
+        "Responsabilité civile professionnelle",
+        "Assurance matériel de tournage (vol, dommages, perte)"
+      ],
+      "recommandees": [
+        "Assurance accidents du travail pour l'équipe",
+        "Assurance annulation/tournage",
+        "Assurance transport international du matériel"
+      ],
+      "cout_estime_XAF": "200000 - 1000000 selon la durée et le matériel",
+      "cout_estime_EUR": "305 - 1524"
+    },
+    "taxes_incentives": {
+      "description": "Aucun tax incentive spécifique pour les films étrangers au Cameroun en 2026",
+      "note": "Contrairement au Maroc, à l'Afrique du Sud, ou à la Tunisie, le Cameroun n'offre pas de crédit d'impôt ou de remboursement de TVA pour les productions étrangères.",
+      "source": "web_search:6#0"
+    }
+  }
+}
