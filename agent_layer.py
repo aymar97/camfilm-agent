@@ -7,7 +7,7 @@ Couche agentique du projet CamFilm Agent.
 Cette couche ajoute :
 - l'analyse d'intention avec Gemini
 - l'appel aux outils locaux de app.py
-- l'appel réel à Parallel Search API à l'exécution
+- l'appel réel à Parallel Search API à l'exécution (via SDK officiel parallel-web)
 - l'appel optionnel à Google Cloud Agent Builder
 - la génération d'une réponse finale structurée pour le producteur
 - un système de retry automatique en cas de surcharge Gemini (503/429)
@@ -27,6 +27,9 @@ from typing import Any, Dict, Optional, Callable
 
 import httpx
 from dotenv import load_dotenv
+
+# SDK officiel Parallel (requis par le règlement Agentic Cinema - Parallel track)
+from parallel import Parallel
 
 # Nouveau SDK Gemini
 from google import genai
@@ -259,13 +262,16 @@ KNOWN_TOOLS = {
 
 
 # ---------------------------------------------------------------------
-# Parallel Search API
+# Parallel Search API (via SDK officiel parallel-web)
 # ---------------------------------------------------------------------
 
 def parallel_search(query: str) -> Dict[str, Any]:
     """
-    Appelle réellement Parallel Search API à l'exécution.
-    Endpoint officiel : https://api.parallel.ai/v1beta/search
+    Appelle Parallel Search API à l'exécution via le SDK officiel parallel-web.
+
+    Conformité règlement Agentic Cinema (Parallel track) :
+    "your project must actively use Parallel's Search API at runtime —
+    for example, via the official parallel-web SDK (Python or TypeScript)".
     """
     query = str(query or "").strip()
 
@@ -276,52 +282,48 @@ def parallel_search(query: str) -> Dict[str, Any]:
             "error": "Aucune requête de recherche fournie.",
         }
 
-    if not PARALLEL_SEARCH_URL or not PARALLEL_API_KEY:
+    if not PARALLEL_API_KEY:
         return {
             "configured": False,
             "ok": False,
             "query": query,
             "note": (
                 "Parallel Search API n'est pas encore configuré. "
-                "Ajoute PARALLEL_API_KEY et PARALLEL_SEARCH_URL dans .env."
+                "Ajoute PARALLEL_API_KEY dans .env."
             ),
         }
 
-    url = PARALLEL_SEARCH_URL or "https://api.parallel.ai/v1beta/search"
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {PARALLEL_API_KEY}",
-        "x-api-key": PARALLEL_API_KEY,
-    }
-
-    # Format officiel attendu par Parallel Search API
-    payload = {
-        "objective": query,
-        "search_queries": [query],
-    }
-
     try:
-        with httpx.Client(timeout=PARALLEL_TIMEOUT) as client:
-            response = client.post(
-                url,
-                json=payload,
-                headers=headers,
-            )
+        # Client officiel parallel-web (SDK Python)
+        client = Parallel(api_key=PARALLEL_API_KEY)
 
-        try:
-            data = response.json()
-        except Exception:
-            data = {
-                "raw": response.text,
-            }
+        # Appel via le SDK officiel
+        search = client.search(
+            objective=query,
+            search_queries=[query],
+        )
+
+        # Convertir les résultats Pydantic en dicts sérialisables en JSON
+        results_serializable = []
+        if search and getattr(search, "results", None):
+            for r in search.results:
+                results_serializable.append({
+                    "title": getattr(r, "title", None),
+                    "url": getattr(r, "url", None),
+                    "publish_date": getattr(r, "publish_date", None),
+                    "excerpts": list(getattr(r, "excerpts", []) or []),
+                })
 
         return {
             "configured": True,
-            "ok": response.status_code < 400,
-            "status_code": response.status_code,
+            "ok": True,
             "query": query,
-            "data": data,
+            "sdk": "parallel-web (official)",
+            "results_count": len(results_serializable),
+            "data": {
+                "results": results_serializable,
+                "search_id": getattr(search, "search_id", None),
+            },
         }
 
     except Exception as exc:
@@ -329,6 +331,7 @@ def parallel_search(query: str) -> Dict[str, Any]:
             "configured": True,
             "ok": False,
             "query": query,
+            "sdk": "parallel-web (official)",
             "error": str(exc),
         }
 
@@ -545,7 +548,7 @@ def run_agent(
     Exécute l'agent Gemini :
     1. Gemini analyse la demande
     2. Gemini choisit un outil local
-    3. Parallel Search est appelé si nécessaire
+    3. Parallel Search est appelé si nécessaire (via SDK officiel parallel-web)
     4. Google Cloud Agent Builder peut être appelé
     5. Gemini produit la réponse finale (en FR ou EN selon le contexte)
     """
@@ -604,7 +607,7 @@ def run_agent(
         tool = "final_answer"
 
     # -----------------------------------------------------------------
-    # 2. Parallel Search API (recherche web en temps réel)
+    # 2. Parallel Search API (recherche web en temps réel via SDK officiel)
     # -----------------------------------------------------------------
     web_result = None
 
