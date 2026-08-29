@@ -305,11 +305,49 @@ def analyze_scene(scene: Dict[str, Any], datasets: Dict[str, Any]) -> Dict[str, 
             alerts.append({"id": "budget:catering_manquant", "level": "JAUNE", "message": "ALERTE JAUNE : Budget sans ligne catering = risque de grève. Prévoir min. 3000 XAF/pers/repas.", "source_dataset": "couts", "trigger_keywords": ["catering"]})
     return {"alerts": alerts, "language": recommend_language(scene, datasets)}
 
+
+# ---------------------------------------------------------------------
+# OPTIMISATION : build_llm_context proactif (Analyse + Budget + Storyboard + Post-prod)
+# ---------------------------------------------------------------------
 def build_llm_context(scene: Dict[str, Any], datasets: Dict[str, Any]) -> Dict[str, Any]:
-    response = {"analysis": analyze_scene(scene, datasets)}
-    if isinstance(scene.get("budget_params"), dict): response["budget"] = estimate_budget(scene["budget_params"], datasets)
-    if scene.get("dialogue"): response["dialogue"] = camerounize_dialogue(str(scene.get("dialogue")), str(scene.get("contexte_dialogue", "quartier_populaire")), datasets)
+    """
+    Construit un contexte COMPLET et PROACTIF pour LLM :
+    Analyse + Budget + Storyboard + Post-Production en un seul appel.
+    """
+    response: Dict[str, Any] = {
+        "analysis": analyze_scene(scene, datasets),
+    }
+
+    # 1. Budget
+    if isinstance(scene.get("budget_params"), dict):
+        response["budget"] = estimate_budget(scene["budget_params"], datasets)
+
+    # 2. Dialogue
+    if scene.get("dialogue"):
+        response["dialogue"] = camerounize_dialogue(
+            str(scene.get("dialogue")),
+            str(scene.get("contexte_dialogue", "quartier_populaire")),
+            datasets,
+        )
+
+    # 3. NOUVEAU : Storyboard automatique
+    try:
+        sb_result = generate_storyboard({"scene": scene}, datasets)
+        response["storyboard"] = sb_result.get("result", {})
+    except Exception:
+        response["storyboard"] = {}
+
+    # 4. NOUVEAU : Post-Production automatique
+    try:
+        lieu_type = scene.get("lieu", {}).get("type", "général") if isinstance(scene.get("lieu"), dict) else "général"
+        camera = scene.get("budget_params", {}).get("camera", "Standard") if isinstance(scene.get("budget_params"), dict) else "Standard"
+        pp_result = post_production_advice({"scene_type": lieu_type, "camera": camera}, datasets)
+        response["post_production"] = pp_result.get("result", {}).get("post_production", {})
+    except Exception:
+        response["post_production"] = {}
+
     return response
+
 
 def generate_storyboard(arguments: Dict[str, Any], datasets: Dict[str, Any]) -> Dict[str, Any]:
     scene = (arguments or {}).get("scene", {}) or {}
@@ -390,7 +428,7 @@ TOOL_SCHEMAS: List[Dict[str, Any]] = [
     {"type": "function", "function": {"name": "analyze_scene", "description": "Analyse une scène de tournage au Cameroun et retourne les alertes IA, risques culturels, administratifs, logistiques, recommandations linguistiques.", "parameters": {"type": "object", "properties": {"scene": {"type": "object"}}, "required": ["scene"]}}},
     {"type": "function", "function": {"name": "estimate_budget", "description": "Estime un budget de tournage au Cameroun en XAF à partir des datasets locaux.", "parameters": {"type": "object", "properties": {"jours_tournage": {"type": "number"}, "equipe_personnes": {"type": "integer"}, "camera": {"type": "string"}, "son": {"type": "string"}, "eclairage": {"type": "string"}, "generateur": {"type": "string"}, "catering": {"type": "string"}, "lieu_type": {"type": "string"}, "taille_chefferie": {"type": "string"}, "marche": {"type": "boolean"}, "transport_generateur": {"type": "boolean"}, "zone_transport": {"type": "string"}, "autorisation_minac": {"type": "boolean"}, "fixer_local": {"type": "boolean"}}}}},
     {"type": "function", "function": {"name": "camerounize_dialogue", "description": "Camérounise un dialogue en proposant du pidgin english, du camfranglais ou des expressions locales selon le contexte.", "parameters": {"type": "object", "properties": {"text": {"type": "string"}, "contexte": {"type": "string"}}, "required": ["text"]}}},
-    {"type": "function", "function": {"name": "build_llm_context", "description": "Construit un contexte complet pour un LLM : analyse de scène, budget, dialogue, alertes et recommandations culturelles.", "parameters": {"type": "object", "properties": {"description": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}, "lieu": {"type": "object"}, "budget_params": {"type": "object"}, "dialogue": {"type": "string"}, "contexte_dialogue": {"type": "string"}}}}},
+    {"type": "function", "function": {"name": "build_llm_context", "description": "Construit un contexte COMPLET pour un LLM : analyse de scène, budget, dialogue, storyboard et post-production en un seul appel.", "parameters": {"type": "object", "properties": {"description": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}, "lieu": {"type": "object"}, "budget_params": {"type": "object"}, "dialogue": {"type": "string"}, "contexte_dialogue": {"type": "string"}}}}},
     {"type": "function", "function": {"name": "generate_storyboard", "description": "Génère un storyboard textuel de tournage : liste de plans à tourner, durée par plan, type de son recommandé, recommandations de réalisation.", "parameters": {"type": "object", "properties": {"scene": {"type": "object"}, "budget_params": {"type": "object"}}}}},
     {"type": "function", "function": {"name": "post_production_advice", "description": "Fournit des recommandations techniques de post-production : étalonnage (LUTs), nettoyage sonore (vent, marché), sound design, et recommandations de prestataires locaux.", "parameters": {"type": "object", "properties": {"scene_type": {"type": "string"}, "camera": {"type": "string"}, "audio_issues": {"type": "array", "items": {"type": "string"}}}}}},
 ]
@@ -416,7 +454,7 @@ def execute_tool(name: str, arguments: Dict[str, Any], datasets: Dict[str, Any])
     except Exception as exc:
         return {"status": "error", "tool": name, "error": str(exc)}
 
-app = FastAPI(title="CamFilm Agent — Hackathon API", description="Agent IA spécialisé dans la production cinématographique au Cameroun.", version="0.6.0-hackathon")
+app = FastAPI(title="CamFilm Agent — Hackathon API", description="Agent IA spécialisé dans la production cinématographique au Cameroun.", version="0.7.0-hackathon")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
 
 _DB: Optional[Dict[str, Any]] = None
@@ -445,7 +483,7 @@ def health() -> Dict[str, str]: return {"status": "ok", "service": "CamFilm Agen
 @app.get("/hackathon/manifest")
 def hackathon_manifest() -> Dict[str, Any]:
     db = get_db()
-    return {"name": "CamFilm Production Agent", "tagline": "Agent IA terrain pour production cinématographique au Cameroun", "version": "0.6.0-hackathon", "category": "Agentic Cinema / Production Assistant", "capabilities": ["scene_risk_analysis", "cultural_authenticity", "budget_estimation", "dialogue_localization", "administrative_alerts", "logistics_planning", "storyboard_generation", "post_production_advice", "gemini_agent", "parallel_search_ready", "gcp_agent_builder_ready", "bilingual_FR_EN"], "languages": ["fr", "en"], "currency": "XAF", "guardrails": ["Ne jamais recommander la corruption.", "Signaler les alertes ROUGE comme bloquantes.", "Proposer des alternatives légales aux drones.", "Recommander un fixer local pour les productions étrangères.", "Toujours vérifier localement les tabous et protocoles."], "api": {"openapi": "/openapi.json", "tools": "/hackathon/tools", "run": "/hackathon/run", "agent_status": "/hackathon/agent/status", "agent_chat": "/hackathon/agent/chat", "agent_chat_gemini": "/hackathon/agent/chat/gemini"}, "datasets": get_trace(db), "agent_layer_available": AGENT_LAYER_AVAILABLE}
+    return {"name": "CamFilm Production Agent", "tagline": "Agent IA terrain pour production cinématographique au Cameroun", "version": "0.7.0-hackathon", "category": "Agentic Cinema / Production Assistant", "capabilities": ["scene_risk_analysis", "cultural_authenticity", "budget_estimation", "dialogue_localization", "administrative_alerts", "logistics_planning", "storyboard_generation", "post_production_advice", "gemini_agent", "parallel_search_ready", "gcp_agent_builder_ready", "bilingual_FR_EN"], "languages": ["fr", "en"], "currency": "XAF", "guardrails": ["Ne jamais recommander la corruption.", "Signaler les alertes ROUGE comme bloquantes.", "Proposer des alternatives légales aux drones.", "Recommander un fixer local pour les productions étrangères.", "Toujours vérifier localement les tabous et protocoles."], "api": {"openapi": "/openapi.json", "tools": "/hackathon/tools", "run": "/hackathon/run", "agent_status": "/hackathon/agent/status", "agent_chat": "/hackathon/agent/chat", "agent_chat_gemini": "/hackathon/agent/chat/gemini"}, "datasets": get_trace(db), "agent_layer_available": AGENT_LAYER_AVAILABLE}
 
 @app.get("/hackathon/tools")
 def hackathon_tools() -> Dict[str, Any]: return {"tools": TOOL_SCHEMAS}
