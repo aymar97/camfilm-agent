@@ -250,6 +250,21 @@ LOCAL_TOOL_SUMMARY = [
                 "lieu_type": "village"
             }
         }
+    },
+    {
+        "name": "generate_storyboard",
+        "description": (
+            "Génère un storyboard textuel de tournage : liste de plans à tourner "
+            "(large, moyen, gros plan, travelling...), durée par plan, type de son "
+            "recommandé, et recommandations pour la phase de réalisation."
+        ),
+        "arguments_example": {
+            "scene": {
+                "description": "Scène de marché à Douala.",
+                "tags": ["marche"],
+                "lieu": {"type": "marche", "region": "Littoral"}
+            }
+        }
     }
 ]
 
@@ -258,6 +273,7 @@ KNOWN_TOOLS = {
     "estimate_budget",
     "camerounize_dialogue",
     "build_llm_context",
+    "generate_storyboard",
 }
 
 
@@ -458,6 +474,7 @@ def _build_planning_prompt(message: str, context: Dict[str, Any]) -> str:
         "- Si la demande concerne un coût, prix, budget, estimation : utilise estimate_budget.\n"
         "- Si la demande concerne une réplique, dialogue, pidgin, camfranglais : utilise camerounize_dialogue.\n"
         "- Si la demande demande une analyse complète : utilise build_llm_context.\n"
+        "- Si la demande concerne la préparation, un storyboard, des plans à tourner, une shot list, un planning, un timing, ou le son : utilise generate_storyboard.\n"
         "- Si l'utilisateur demande des informations actuelles, externes, météo, actualité, réglementation mise à jour, tendances : active need_web_search=true.\n"
         "- Si tu n'as pas assez d'informations pour appeler un outil, utilise tool='final_answer' et pose des questions précises.\n"
         "- Ne recommande jamais la corruption.\n"
@@ -637,6 +654,9 @@ def run_agent(
 
         if tool == "estimate_budget" and context.get("budget_params") and not arguments:
             arguments = context.get("budget_params")
+
+        if tool == "generate_storyboard" and context and not arguments.get("scene"):
+            arguments = {"scene": context}
 
         try:
             tool_result = execute_tool_fn(

@@ -11,6 +11,7 @@ Fonctionnalités :
 - recommandation linguistique
 - camérounisation de dialogues
 - estimation de budget
+- génération de storyboard (pré-production + réalisation)
 - exposition des outils pour agent IA
 - couche agentique Gemini via agent_layer.py
 
@@ -152,11 +153,6 @@ def _norm_text(text: Any) -> str:
 def parse_range(value: Any, default: Tuple[float, float] = (0.0, 0.0)) -> Tuple[float, float]:
     """
     Transforme une valeur de coût en fourchette basse/haute.
-    Exemples :
-    - "50000 - 200000"
-    - "300000 - 1000000+"
-    - 15000
-    - {"petit_village": "50000 - 100000"}
     """
     if value is None:
         return default
@@ -201,8 +197,6 @@ def parse_range(value: Any, default: Tuple[float, float] = (0.0, 0.0)) -> Tuple[
 def get_by_path(obj: Any, path: str) -> Any:
     """
     Récupère une valeur imbriquée.
-    Exemple :
-    get_by_path(data, "realite_energetique.groupes_electrogenes.types_disponibles")
     """
     current = obj
 
@@ -1241,6 +1235,95 @@ def build_llm_context(scene: Dict[str, Any], datasets: Dict[str, Any]) -> Dict[s
 
 
 # ---------------------------------------------------------------------
+# Outil : generate_storyboard (pré-production + réalisation)
+# ---------------------------------------------------------------------
+
+def generate_storyboard(arguments: Dict[str, Any], datasets: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Génère un storyboard textuel de tournage :
+    liste de plans, durée par plan, type de son, recommandations.
+    """
+    scene = (arguments or {}).get("scene", {}) or {}
+    description = str(scene.get("description", "") or "")
+    lieu = scene.get("lieu", {}) or {}
+    lieu_type = str(lieu.get("type", "ville")).lower()
+    region = str(lieu.get("region", ""))
+    tags = scene.get("tags", []) or []
+    budget_params = (arguments or {}).get("budget_params", {}) or {}
+    jours = int(budget_params.get("jours_tournage", 1) or 1)
+
+    templates = {
+        "marche": [
+            ("Plan large (establishing)", "Vue d'ensemble du marché, foule et étals", 20, "Ambiance + son direct"),
+            ("Plan moyen", "Vendeurs et clients, échanges aux étals", 15, "Son direct (dialogues)"),
+            ("Gros plan", "Produits, mains, argent, expressions", 10, "Son direct ou voix off"),
+            ("Travelling", "Suivi du personnage dans les allées", 15, "Ambiance + pas"),
+            ("Plan en plongée", "Vue depuis un bâtiment (alternative drone)", 15, "Ambiance"),
+        ],
+        "village": [
+            ("Plan large (establishing)", "Vue du village / chefferie, paysage", 20, "Ambiance (nature, village)"),
+            ("Plan moyen", "Cérémonie, rassemblement, danses", 15, "Son direct + musique traditionnelle"),
+            ("Gros plan", "Visages des notables, symboles, détails", 10, "Voix off ou ambiance"),
+            ("Champ / contre-champ", "Dialogues entre personnages", 15, "Son direct (dialogues)"),
+            ("Plan de coupe (sunset)", "Plan de clôture, lumière chaude", 10, "Musique + ambiance"),
+        ],
+        "ville": [
+            ("Plan large (establishing)", "Rue, bâtiments, circulation", 20, "Ambiance urbaine"),
+            ("Plan moyen", "Personnages en action dans la rue", 15, "Son direct (dialogues)"),
+            ("Gros plan", "Émotions, objets importants", 10, "Son direct ou voix off"),
+            ("Travelling", "Suivi du personnage en mouvement", 15, "Ambiance + pas"),
+            ("Plan de nuit", "Scène nocturne avec éclairage", 20, "Ambiance + musique"),
+        ],
+        "rural": [
+            ("Plan large (establishing)", "Paysage, champs, piste", 20, "Ambiance (nature)"),
+            ("Plan moyen", "Personnages en activité", 15, "Son direct"),
+            ("Gros plan", "Détails, gestes, expressions", 10, "Voix off ou ambiance"),
+            ("Plan drone (si autorisé)", "Vue aérienne — vérifier autorisation CCAA", 15, "Ambiance"),
+        ],
+    }
+
+    shots_template = templates.get(lieu_type, templates["ville"])
+
+    shots = []
+    total_minutes = 0
+    for i, (type_plan, desc, duree, son) in enumerate(shots_template, start=1):
+        shots.append({
+            "numero": i,
+            "type_plan": type_plan,
+            "description": desc,
+            "duree_minutes": duree,
+            "son_recommande": son,
+        })
+        total_minutes += duree
+
+    has_drone = ("drone" in description.lower()) or any("drone" in str(t).lower() for t in tags)
+
+    notes = []
+    if has_drone:
+        notes.append("Drone : autorisation CCAA obligatoire (1-3 mois). Alternatives : grue, perche, bâtiment.")
+    if lieu_type == "marche":
+        notes.append("Marché : accord du président du marché + vendeurs (contribution 20 000-50 000 XAF).")
+    if lieu_type == "village":
+        notes.append("Village : respecter le protocole de la chefferie, prévoir cérémonie d'accueil.")
+
+    return {
+        "status": "success",
+        "tool": "generate_storyboard",
+        "result": {
+            "description_scene": description or "Scène non précisée",
+            "lieu_type": lieu_type,
+            "region": region,
+            "jours_tournage": jours,
+            "storyboard": shots,
+            "duree_totale_minutes": total_minutes,
+            "duree_estimee_heures": round(total_minutes / 60, 1),
+            "son_global": "Son direct + ambiance ; pidgin/camfranglais pour les dialogues de marché",
+            "notes": notes,
+        },
+    }
+
+
+# ---------------------------------------------------------------------
 # Hackathon tools
 # ---------------------------------------------------------------------
 
@@ -1333,6 +1416,23 @@ TOOL_SCHEMAS: List[Dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_storyboard",
+            "description": (
+                "Génère un storyboard textuel de tournage : liste de plans à tourner, "
+                "durée par plan, type de son recommandé, recommandations de réalisation."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "scene": {"type": "object"},
+                    "budget_params": {"type": "object"},
+                },
+            },
+        },
+    },
 ]
 
 
@@ -1380,6 +1480,12 @@ def execute_tool(
         elif name == "build_llm_context":
             result = build_llm_context(arguments, datasets)
 
+        elif name == "generate_storyboard":
+            if "scene" in arguments or "budget_params" in arguments:
+                result = generate_storyboard(arguments, datasets)
+            else:
+                result = generate_storyboard({"scene": arguments}, datasets)
+
         else:
             return {
                 "status": "error",
@@ -1411,9 +1517,9 @@ app = FastAPI(
     description=(
         "Agent IA spécialisé dans la production cinématographique au Cameroun. "
         "Capacités : analyse de scène, alertes culturelles, budget réaliste, "
-        "camérounisation de dialogues, recommandations logistiques."
+        "camérounisation de dialogues, recommandations logistiques, storyboard."
     ),
-    version="0.4.0-hackathon",
+    version="0.5.0-hackathon",
 )
 
 app.add_middleware(
@@ -1491,7 +1597,7 @@ def hackathon_manifest() -> Dict[str, Any]:
     return {
         "name": "CamFilm Production Agent",
         "tagline": "Agent IA terrain pour production cinématographique au Cameroun",
-        "version": "0.4.0-hackathon",
+        "version": "0.5.0-hackathon",
         "category": "Agentic Cinema / Production Assistant",
         "capabilities": [
             "scene_risk_analysis",
@@ -1500,6 +1606,7 @@ def hackathon_manifest() -> Dict[str, Any]:
             "dialogue_localization",
             "administrative_alerts",
             "logistics_planning",
+            "storyboard_generation",
             "gemini_agent",
             "parallel_search_ready",
             "gcp_agent_builder_ready",
@@ -1638,6 +1745,41 @@ def hackathon_agent_chat(payload: AgentChatRequest) -> Dict[str, Any]:
             },
         }
 
+    # Storyboard intent
+    elif any(
+        keyword in message
+        for keyword in [
+            "storyboard",
+            "plans",
+            "shot list",
+            "planning",
+            "timing",
+            "preparer",
+            "préparer",
+        ]
+    ):
+        selected_tool = "generate_storyboard"
+
+        if context:
+            arguments = {"scene": context}
+        else:
+            arguments = {
+                "scene": {
+                    "description": payload.message,
+                }
+            }
+
+        example = {
+            "tool": "generate_storyboard",
+            "arguments": {
+                "scene": {
+                    "description": "Scène de marché à Douala.",
+                    "tags": ["marche"],
+                    "lieu": {"type": "marche", "region": "Littoral"},
+                }
+            },
+        }
+
     # Scene / risk intent
     elif any(
         keyword in message
@@ -1725,13 +1867,6 @@ def hackathon_agent_chat(payload: AgentChatRequest) -> Dict[str, Any]:
 def hackathon_agent_chat_gemini(payload: AgentChatRequest) -> Dict[str, Any]:
     """
     Version agentique avec Gemini.
-
-    Elle utilise :
-    - les datasets locaux CamFilm
-    - Gemini
-    - Parallel Search API si configuré
-    - Google Cloud Agent Builder si configuré
-    - Support bilingue FR/EN via le paramètre `language` dans le contexte
     """
     if not AGENT_LAYER_AVAILABLE:
         raise HTTPException(

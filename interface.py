@@ -210,6 +210,32 @@ def display_budget(budget, lang):
             st.markdown(f"- {n}")
 
 
+# ← NOUVEAU ÉTAPE 3 : Fonction d'affichage du storyboard
+def display_storyboard(storyboard, lang):
+    """Affiche le storyboard textuel de tournage."""
+    if not storyboard or not storyboard.get("storyboard"):
+        return
+    title = "🎬 Storyboard de tournage" if lang == "Français" else "🎬 Shooting storyboard"
+    st.subheader(title)
+    shots = storyboard.get("storyboard", [])
+    df = pd.DataFrame([{
+        "#": s.get("numero"),
+        "Plan": s.get("type_plan"),
+        "Description": s.get("description"),
+        "Durée (min)": s.get("duree_minutes"),
+        "Son": s.get("son_recommande"),
+    } for s in shots])
+    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.markdown(
+        f"**⏱️ Durée totale estimée :** {storyboard.get('duree_estimee_heures')} h "
+        f"({storyboard.get('duree_totale_minutes')} min)"
+    )
+    if storyboard.get("son_global"):
+        st.markdown(f"**🔊 Son global :** {storyboard.get('son_global')}")
+    for n in storyboard.get("notes", []):
+        st.warning("⚠️ " + n)
+
+
 def display_language(language, lang):
     tr = TEXTS[lang]
     if not language:
@@ -342,6 +368,10 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                         display_alerts(analysis.get("alerts", []), lang)
                         display_language(analysis.get("language", {}), lang)
                     display_budget(data.get("budget", {}), lang)
+
+                    # ← NOUVEAU ÉTAPE 3 : Appel de l'affichage du storyboard
+                    display_storyboard(data.get("storyboard", {}), lang)
+
                 else:
                     st.info("💬 " + tr["agent_asked_details"])
 
@@ -351,7 +381,7 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
 st.markdown("---")
 st.markdown(
     "<div style='text-align:center;color:#888;font-size:0.9em;'>"
-    "<p>CamFilm Agent v0.4.0 — Gemini + Google ADK + Parallel Search + Local Datasets</p>"
+    "<p>CamFilm Agent v0.5.0 — Gemini + Google ADK + Parallel Search + Local Datasets</p>"
     "<p>API : <a href='http://127.0.0.1:8000/docs' target='_blank'>http://127.0.0.1:8000/docs</a></p></div>",
     unsafe_allow_html=True,
 )
