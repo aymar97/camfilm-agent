@@ -5,7 +5,6 @@ Version AUTONOME de l'interface pour Streamlit Community Cloud.
 """
 import os, streamlit as st, pandas as pd
 from typing import Dict, Any
-from io import BytesIO
 
 try:
     for _key, _value in st.secrets.items(): os.environ.setdefault(_key, str(_value))
@@ -25,102 +24,6 @@ TEXTS = {
     "English": {"title": "CamFilm Agent", "subtitle": "AI Agent for Film Production in Cameroon", "examples": "Request examples", "scenario1": "Scenario 1: Market in Douala", "scenario2": "Scenario 2: Bamileke Village", "use1": "Use Example 1", "use2": "Use Example 2", "tip": "Tip:", "tip_text": "The more details you provide (location, duration, crew, equipment), the more accurate the agent!", "describe": "Describe your film project", "message_label": "Your message:", "placeholder": "Example: I want to shoot a short film in Yaounde, street scene with 8 people, 3 days...", "advanced": "Advanced Settings (Optional)", "basic_info": "Basic information:", "days": "Shooting days", "people": "Number of people", "lieu_type": "Location type", "region": "Region", "materiel": "Equipment & services:", "camera": "Camera", "sound": "Sound", "lighting": "Lighting", "generator": "Generator", "catering": "Catering", "fixer": "Local fixer", "tags": "Tags (comma separated)", "analyze": "Analyze with CamFilm Agent", "analyzing": "The agent is analyzing your project...", "error_empty": "Please describe your film project.", "error_connect": "Internal agent error. Check the API keys in the secrets.", "done": "Analysis complete!", "report": "Full Agent Report", "alerts": "Detected Alerts", "no_alerts": "No alerts detected", "alert_word": "ALERT", "languages": "Language Recommendations", "recommended": "Recommended languages:", "dialogue_examples": "Dialogue examples:", "budget": "Estimated Budget", "min_budget": "Minimum Budget", "max_budget": "Maximum Budget", "duration_team": "Duration & Crew", "days_unit": "days", "people_unit": "people", "detail": "Expense Breakdown", "chart": "Budget Distribution", "notes": "Notes:", "tech": "Technical Information", "agent_asked_details": "The agent needs more details. Tell it about the location, duration, crew, etc."},
 }
 LEVEL_TRANSLATION = {"Français": {"ROUGE": "ROUGE", "ORANGE": "ORANGE", "JAUNE": "JAUNE", "INFO": "INFO"}, "English": {"ROUGE": "RED", "ORANGE": "ORANGE", "JAUNE": "YELLOW", "INFO": "INFO"}}
-
-# ---------------------------------------------------------------------
-# NOUVEAU : Option C - Images placeholder basées sur le lieu
-# ---------------------------------------------------------------------
-def get_location_image(lieu_type: str, region: str) -> str:
-    """Retourne une URL d'image placeholder basée sur le lieu."""
-    images = {
-        "marche": "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800",
-        "village": "https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=800",
-        "ville": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800",
-        "rural": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800",
-    }
-    return images.get(lieu_type.lower(), images["ville"])
-
-# ---------------------------------------------------------------------
-# NOUVEAU : Option A - Génération de rapport téléchargeable
-# ---------------------------------------------------------------------
-def generate_markdown_report(result: Dict[str, Any], lang: str) -> str:
-    """Génère un rapport Markdown complet du résultat."""
-    tr = TEXTS[lang]
-    report = []
-
-    report.append(f"# 🎬 {tr['title']} - Rapport Complet\n")
-    report.append(f"**{tr['subtitle']}**\n")
-    report.append("---\n\n")
-
-    # Message de l'agent
-    if result.get("agent_message"):
-        report.append(f"## 📋 {tr['report']}\n")
-        report.append(result["agent_message"] + "\n\n")
-        report.append("---\n\n")
-
-    tool_result = result.get("tool_result") or {}
-    if tool_result.get("status") == "success":
-        data = tool_result.get("result", {})
-
-        # Alertes
-        analysis = data.get("analysis", {})
-        alerts = analysis.get("alerts", [])
-        if alerts:
-            report.append(f"## 🚨 {tr['alerts']}\n\n")
-            for alert in alerts:
-                level = alert.get("level", "INFO")
-                emoji = ALERT_EMOJIS.get(level, "⚪")
-                report.append(f"{emoji} **{tr['alert_word']} {level}** : {alert.get('message', '')}\n\n")
-
-        # Budget
-        budget = data.get("budget", {})
-        if budget:
-            report.append(f"\n## 💰 {tr['budget']}\n\n")
-            report.append(f"- **{tr['min_budget']}** : {budget.get('low_XAF', 0):,} XAF ({budget.get('low_EUR', 0):.2f} EUR)\n")
-            report.append(f"- **{tr['max_budget']}** : {budget.get('high_XAF', 0):,} XAF ({budget.get('high_EUR', 0):.2f} EUR)\n")
-            report.append(f"- **{tr['duration_team']}** : {budget.get('jours_tournage', 0)} {tr['days_unit']}, {budget.get('equipe_personnes', 0)} {tr['people_unit']}\n\n")
-
-        # Storyboard
-        storyboard = data.get("storyboard", {})
-        if storyboard and storyboard.get("storyboard"):
-            report.append(f"\n## 🎬 Storyboard de tournage\n\n")
-            report.append(f"**⏱️ Durée totale estimée :** {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)\n\n")
-            report.append("| # | Plan | Description | Durée (min) | Son |\n")
-            report.append("|---|------|-------------|-------------|-----|\n")
-            for shot in storyboard.get("storyboard", []):
-                report.append(f"| {shot.get('numero', '')} | {shot.get('type_plan', '')} | {shot.get('description', '')} | {shot.get('duree_minutes', '')} | {shot.get('son_recommande', '')} |\n")
-            report.append("\n")
-            if storyboard.get("notes"):
-                report.append("**⚠️ Notes :**\n")
-                for note in storyboard.get("notes", []):
-                    report.append(f"- {note}\n")
-                report.append("\n")
-
-        # Post-Production
-        post_prod = data.get("post_production", {})
-        if post_prod:
-            report.append(f"\n## 🎛️ Post-Production & Finition\n\n")
-
-            cg = post_prod.get("color_grading", {})
-            if cg:
-                report.append("### 🎨 Étalonnage (Color Grading)\n")
-                report.append(f"- **LUT recommandée :** {cg.get('lut_recommandee', '')}\n")
-                report.append(f"- **Réglages :** {cg.get('reglages_resolve', '')}\n")
-                report.append(f"- **Astuce lumière :** {cg.get('probleme_lumiere', '')}\n\n")
-
-            sd = post_prod.get("sound_design", {})
-            if sd:
-                report.append("### 🔊 Sound Design & Mixage\n")
-                report.append(f"- **Nettoyage :** {sd.get('nettoyage', '')}\n")
-                report.append(f"- **Ambiances :** {sd.get('ambiances', '')}\n")
-                report.append(f"- **Mixage :** {sd.get('mixage', '')}\n\n")
-
-            if post_prod.get("prestataires_locaux"):
-                report.append("### 📍 Prestataires Locaux\n")
-                for p in post_prod.get("prestataires_locaux", []):
-                    report.append(f"- {p}\n")
-                report.append("\n")
-
-    return "\n".join(report)
 
 def call_agent(message: str, context: Dict[str, Any], language: str) -> Dict[str, Any]:
     try: return run_agent(message=message, context={**(context or {}), "language": language}, datasets=_DB, execute_tool_fn=execute_tool, use_parallel=True, use_gcp=False)
@@ -197,13 +100,8 @@ def display_language(language, lang):
                 if ex.get("camfranglais"): st.markdown(f"**Camfranglais :** {ex['camfranglais']}")
                 if ex.get("contexte"): st.markdown(f"*{ex['contexte']}*")
 
-# ---------------------------------------------------------------------
-# Interface principale avec sélecteur de mode
-# ---------------------------------------------------------------------
 lang = st.sidebar.radio("🌍 Langue / Language", ["Français", "English"], index=0)
-mode = st.sidebar.radio("🎯 Mode d'affichage", ["📊 Analyse Complète", "🎨 Pitch Deck Visuel"], index=0)
 tr = TEXTS[lang]
-
 st.title("🎬 " + tr["title"])
 st.markdown("**" + tr["subtitle"] + "**")
 st.markdown("---")
@@ -264,105 +162,24 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                 err = result.get("error")
                 st.error("❌ " + (tr["error_connect"] if err == "CONNECT" else str(err)))
             else:
-                # Sauvegarder le résultat pour le mode Pitch Deck
-                st.session_state["last_result"] = result
-                st.rerun()
-
-# ---------------------------------------------------------------------
-# Affichage des résultats selon le mode
-# ---------------------------------------------------------------------
-if "last_result" in st.session_state:
-    result = st.session_state["last_result"]
-
-    if mode == "🎨 Pitch Deck Visuel":
-        st.header("🎨 Pitch Deck Visuel")
-
-        tool_result = result.get("tool_result") or {}
-        if tool_result.get("status") == "success":
-            data = tool_result.get("result", {})
-
-            # Image d'ambiance
-            lieu_type = data.get("lieu_type", "ville")
-            region = data.get("region", "")
-            img_url = get_location_image(lieu_type, region)
-            st.image(img_url, caption=f"Ambiance : {lieu_type} ({region})", use_column_width=True)
-            st.markdown("---")
-
-            # Slide 1 : Alertes
-            analysis = data.get("analysis", {})
-            alerts = analysis.get("alerts", [])
-            if alerts:
-                st.subheader("🚨 Slide 1 : Alertes Critiques")
-                for alert in alerts[:3]:
-                    level = alert.get("level", "INFO")
-                    emoji = ALERT_EMOJIS.get(level, "⚪")
-                    st.error(f"{emoji} {alert.get('message', '')[:150]}...")
+                st.success("✅ " + tr["done"])
+                if result.get("agent_message"):
+                    st.subheader("📋 " + tr["report"])
+                    st.markdown(result["agent_message"])
                 st.markdown("---")
-
-            # Slide 2 : Budget
-            budget = data.get("budget", {})
-            if budget:
-                st.subheader("💰 Slide 2 : Budget Estimé")
-                c1, c2 = st.columns(2)
-                c1.metric("Budget Min", f"{budget.get('low_XAF', 0):,} XAF", f"{budget.get('low_EUR', 0):.2f} EUR")
-                c2.metric("Budget Max", f"{budget.get('high_XAF', 0):,} XAF", f"{budget.get('high_EUR', 0):.2f} EUR")
-                st.markdown("---")
-
-            # Slide 3 : Storyboard
-            storyboard = data.get("storyboard", {})
-            if storyboard:
-                st.subheader("🎬 Slide 3 : Storyboard")
-                st.info(f"⏱️ Durée totale : {storyboard.get('duree_totale_minutes', 0)} min ({storyboard.get('duree_estimee_heures', 0)} h)")
-                shots = storyboard.get("storyboard", [])[:3]
-                for shot in shots:
-                    st.markdown(f"**Plan {shot.get('numero')}** - {shot.get('type_plan')} : {shot.get('description', '')[:80]}...")
-                st.markdown("---")
-
-            # Slide 4 : Post-Production
-            post_prod = data.get("post_production", {})
-            if post_prod:
-                st.subheader("🎛️ Slide 4 : Post-Production")
-                cg = post_prod.get("color_grading", {})
-                st.markdown(f"**🎨 Étalonnage :** {cg.get('lut_recommandee', '')}")
-                sd = post_prod.get("sound_design", {})
-                st.markdown(f"**🔊 Son :** {sd.get('nettoyage', '')[:100]}...")
-        else:
-            st.info("💬 Lance d'abord une analyse pour générer le Pitch Deck.")
-
-    else:  # Mode "Analyse Complète"
-        if result.get("agent_message"):
-            st.subheader("📋 " + tr["report"])
-            st.markdown(result["agent_message"])
-        st.markdown("---")
-
-        tool_result = result.get("tool_result") or {}
-        if tool_result.get("status") == "success":
-            data = tool_result.get("result", {})
-            analysis = data.get("analysis", {})
-            if analysis:
-                display_alerts(analysis.get("alerts", []), lang)
-                display_language(analysis.get("language", {}), lang)
-            display_budget(data.get("budget", {}), lang)
-            display_storyboard(data.get("storyboard", {}), lang)
-            display_post_production(data.get("post_production", {}), lang)
-
-            # NOUVEAU : Bouton Export Markdown
-            st.markdown("---")
-            c1, c2 = st.columns(2)
-            with c1:
-                markdown_report = generate_markdown_report(result, lang)
-                st.download_button(
-                    label="📄 Télécharger le rapport (Markdown)" if lang == "Français" else "📄 Download Report (Markdown)",
-                    data=markdown_report,
-                    file_name="camfilm_report.md",
-                    mime="text/markdown",
-                )
-            with c2:
-                st.info("💡 **Astuce** : Ouvrez le fichier Markdown avec un éditeur ou convertissez-le en PDF pour le partager avec votre équipe.")
-        else:
-            st.info("💬 " + tr["agent_asked_details"])
-
-        with st.expander("🔧 " + tr["tech"]): st.json(result)
+                tool_result = result.get("tool_result") or {}
+                if tool_result.get("status") == "success":
+                    data = tool_result.get("result", {})
+                    analysis = data.get("analysis", {})
+                    if analysis:
+                        display_alerts(analysis.get("alerts", []), lang)
+                        display_language(analysis.get("language", {}), lang)
+                    display_budget(data.get("budget", {}), lang)
+                    display_storyboard(data.get("storyboard", {}), lang)
+                    display_post_production(data.get("post_production", {}), lang)
+                else:
+                    st.info("💬 " + tr["agent_asked_details"])
+                with st.expander("🔧 " + tr["tech"]): st.json(result)
 
 st.markdown("---")
-st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v1.0-cloud — Cycle Complet : Pré-prod, Réalisation, Post-prod + Export PDF + Pitch Deck</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v0.6.0-cloud — Cycle Complet : Pré-prod, Réalisation, Post-prod</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
