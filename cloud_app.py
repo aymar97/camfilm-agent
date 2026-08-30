@@ -27,163 +27,170 @@ TEXTS = {
 LEVEL_TRANSLATION = {"Français": {"ROUGE": "ROUGE", "ORANGE": "ORANGE", "JAUNE": "JAUNE", "INFO": "INFO"}, "English": {"ROUGE": "RED", "ORANGE": "ORANGE", "JAUNE": "YELLOW", "INFO": "INFO"}}
 
 # ---------------------------------------------------------------------
-# NOUVEAU : Fonction d'export PDF
+# Utilitaire PDF : nettoie les emojis / caractères non latin-1
+# ---------------------------------------------------------------------
+def _clean_pdf_text(text: Any) -> str:
+    text = str(text or "")
+    for emo, rep in {
+        "🔴": "[ROUGE] ", "🟠": "[ORANGE] ", "🟡": "[JAUNE] ", "ℹ️": "[INFO] ",
+        "⚠️": "Attention : ", "✅": "[OK] ", "•": "-",
+        "📋": "", "🚨": "", "💰": "", "🎬": "", "🎛️": "", "🎨": "", "🔊": "",
+        "📍": "", "⏱️": "", "💡": "", "🗣️": "", "⚙️": "", "📚": "", "🌍": "", "🎯": "",
+    }.items():
+        text = text.replace(emo, rep)
+    return text.encode("latin-1", "replace").decode("latin-1")
+
+# ---------------------------------------------------------------------
+# Génération du rapport PDF (version robuste fpdf2)
 # ---------------------------------------------------------------------
 def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
-    """Génère un PDF complet du rapport CamFilm Agent."""
     from fpdf import FPDF
 
     tr = TEXTS[lang]
-    pdf = FPDF()
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
 
-    # Fonction helper pour le texte multi-lignes
-    def add_wrapped_text(text, font_size=10, bold=False, spacing=5):
-        if bold:
-            pdf.set_font("Arial", "B", font_size)
-        else:
-            pdf.set_font("Arial", "", font_size)
-        pdf.multi_cell(0, spacing, text.encode('latin1', 'replace').decode('latin1'))
+    def clean(t): return _clean_pdf_text(t)
 
-    # Titre
-    pdf.set_font("Arial", "B", 18)
-    pdf.cell(0, 10, f"{tr['title']} - Rapport Complet".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
-    pdf.set_font("Arial", "I", 10)
-    pdf.cell(0, 6, f"{tr['subtitle']}".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
-    pdf.cell(0, 6, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True, align="C")
-    pdf.ln(5)
-
-    # Message de l'agent
-    if result.get("agent_message"):
-        pdf.set_font("Arial", "B", 14)
-        pdf.cell(0, 8, f"📋 {tr['report']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+    def heading(text, size=14):
+        pdf.set_font("Arial", "B", size)
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(pdf.epw, 7, clean(text))
         pdf.ln(2)
-        add_wrapped_text(result["agent_message"], 10, spacing=5)
-        pdf.ln(3)
+
+    def body(text, size=10, bold=False):
+        pdf.set_font("Arial", "B" if bold else "", size)
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(pdf.epw, 5, clean(text))
+        pdf.ln(1)
+
+    # ---- Page de titre
+    pdf.set_font("Arial", "B", 18)
+    pdf.cell(0, 10, clean(f"{tr['title']} - Rapport Complet"), align="C")
+    pdf.ln(12)
+    pdf.set_font("Arial", "I", 10)
+    pdf.cell(0, 6, clean(tr["subtitle"]), align="C")
+    pdf.ln(6)
+    pdf.cell(0, 6, f"Date : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}", align="C")
+    pdf.ln(8)
+
+    # ---- Rapport de l'agent
+    if result.get("agent_message"):
+        heading(f"1. {tr['report']}", 14)
+        body(result["agent_message"], 10)
 
     tool_result = result.get("tool_result") or {}
     if tool_result.get("status") == "success":
         data = tool_result.get("result", {})
 
-        # Alertes
-        analysis = data.get("analysis", {})
-        alerts = analysis.get("alerts", [])
+        # ---- Alertes
+        alerts = (data.get("analysis", {}) or {}).get("alerts", [])
         if alerts:
             pdf.add_page()
-            pdf.set_font("Arial", "B", 14)
-            pdf.cell(0, 8, f"🚨 {tr['alerts']}".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.ln(2)
+            heading(f"2. {tr['alerts']}", 14)
             for alert in alerts:
                 level = alert.get("level", "INFO")
-                pdf.set_font("Arial", "B", 11)
-                pdf.cell(0, 6, f"{ALERT_EMOJIS.get(level, '•')} {level}".encode('latin1', 'replace').decode('latin1'), ln=True)
-                add_wrapped_text(alert.get('message', ''), 10, spacing=5)
-                pdf.ln(2)
+                body(f"[{level}] {alert.get('message', '')}", 10)
+                pdf.ln(1)
 
-        # Budget
-        budget = data.get("budget", {})
+        # ---- Budget
+        budget = data.get("budget", {}) or {}
         if budget:
             pdf.add_page()
-            pdf.set_font("Arial", "B", 14)
-            pdf.cell(0, 8, f"💰 {tr['budget']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+            heading(f"3. {tr['budget']}", 14)
+            body(f"{tr['min_budget']} : {budget.get('low_XAF', 0):,} XAF ({budget.get('low_EUR', 0):.2f} EUR)", 11, bold=True)
+            body(f"{tr['max_budget']} : {budget.get('high_XAF', 0):,} XAF ({budget.get('high_EUR', 0):.2f} EUR)", 11, bold=True)
+            body(f"{tr['duration_team']} : {budget.get('jours_tournage', 0)} {tr['days_unit']} / {budget.get('equipe_personnes', 0)} {tr['people_unit']}", 11)
             pdf.ln(2)
 
-            pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 6, f"{tr['min_budget']}: {budget.get('low_XAF', 0):,} XAF ({budget.get('low_EUR', 0):.2f} EUR)".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.cell(0, 6, f"{tr['max_budget']}: {budget.get('high_XAF', 0):,} XAF ({budget.get('high_EUR', 0):.2f} EUR)".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.cell(0, 6, f"{tr['duration_team']}: {budget.get('jours_tournage', 0)} {tr['days_unit']}, {budget.get('equipe_personnes', 0)} {tr['people_unit']}".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.ln(3)
-
-            # Tableau des postes
             lines = budget.get("lines", [])
             if lines:
-                pdf.set_font("Arial", "B", 10)
-                pdf.cell(60, 6, "Poste", border=1)
+                pdf.set_font("Arial", "B", 9)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(70, 6, clean("Poste"), border=1)
                 pdf.cell(30, 6, "Min (XAF)", border=1, align="R")
                 pdf.cell(30, 6, "Max (XAF)", border=1, align="R")
-                pdf.cell(70, 6, "Note", border=1)
+                pdf.cell(60, 6, clean("Note"), border=1)
                 pdf.ln()
-
-                pdf.set_font("Arial", "", 9)
+                pdf.set_font("Arial", "", 8)
                 for line in lines:
-                    pdf.cell(60, 5, str(line.get("poste", ""))[:30].encode('latin1', 'replace').decode('latin1'), border=1)
+                    pdf.set_x(pdf.l_margin)
+                    pdf.cell(70, 5, clean(str(line.get("poste", ""))[:38]), border=1)
                     pdf.cell(30, 5, f"{line.get('low_XAF', 0):,}", border=1, align="R")
                     pdf.cell(30, 5, f"{line.get('high_XAF', 0):,}", border=1, align="R")
-                    pdf.cell(70, 5, str(line.get("note", ""))[:35].encode('latin1', 'replace').decode('latin1'), border=1)
+                    pdf.cell(60, 5, clean(str(line.get("note", ""))[:30]), border=1)
                     pdf.ln()
 
-        # Storyboard
-        storyboard = data.get("storyboard", {})
-        if storyboard and storyboard.get("storyboard"):
+        # ---- Storyboard
+        storyboard = data.get("storyboard", {}) or {}
+        if storyboard.get("storyboard"):
             pdf.add_page()
-            pdf.set_font("Arial", "B", 14)
-            pdf.cell(0, 8, "🎬 Storyboard de tournage".encode('latin1', 'replace').decode('latin1'), ln=True)
+            heading("4. Storyboard de tournage", 14)
+            body(f"Durée totale estimée : {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)", 11, bold=True)
+            if storyboard.get("son_global"):
+                body(f"Son global : {storyboard.get('son_global', '')}", 10)
             pdf.ln(2)
 
-            pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 6, f"⏱️ Durée totale estimée : {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.ln(3)
-
-            # Tableau du storyboard
-            pdf.set_font("Arial", "B", 9)
-            pdf.cell(10, 6, "#", border=1, align="C")
-            pdf.cell(40, 6, "Plan", border=1)
-            pdf.cell(80, 6, "Description", border=1)
-            pdf.cell(20, 6, "Durée", border=1, align="C")
-            pdf.cell(40, 6, "Son", border=1)
+            pdf.set_font("Arial", "B", 8)
+            pdf.set_x(pdf.l_margin)
+            pdf.cell(8, 6, "#", border=1, align="C")
+            pdf.cell(42, 6, clean("Plan"), border=1)
+            pdf.cell(70, 6, clean("Description"), border=1)
+            pdf.cell(18, 6, clean("Durée"), border=1, align="C")
+            pdf.cell(52, 6, clean("Son"), border=1)
             pdf.ln()
-
-            pdf.set_font("Arial", "", 8)
+            pdf.set_font("Arial", "", 7.5)
             for shot in storyboard.get("storyboard", []):
-                pdf.cell(10, 5, str(shot.get("numero", "")), border=1, align="C")
-                pdf.cell(40, 5, str(shot.get("type_plan", ""))[:20].encode('latin1', 'replace').decode('latin1'), border=1)
-                pdf.cell(80, 5, str(shot.get("description", ""))[:40].encode('latin1', 'replace').decode('latin1'), border=1)
-                pdf.cell(20, 5, f"{shot.get('duree_minutes', '')} min", border=1, align="C")
-                pdf.cell(40, 5, str(shot.get("son_recommande", ""))[:20].encode('latin1', 'replace').decode('latin1'), border=1)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(8, 5, str(shot.get("numero", "")), border=1, align="C")
+                pdf.cell(42, 5, clean(str(shot.get("type_plan", ""))[:24]), border=1)
+                pdf.cell(70, 5, clean(str(shot.get("description", ""))[:45]), border=1)
+                pdf.cell(18, 5, f"{shot.get('duree_minutes', '')} min", border=1, align="C")
+                pdf.cell(52, 5, clean(str(shot.get("son_recommande", ""))[:28]), border=1)
                 pdf.ln()
+            for note in storyboard.get("notes", []):
+                body(f"! {note}", 9)
 
-        # Post-Production
-        post_prod = data.get("post_production", {})
+        # ---- Post-Production
+        post_prod = data.get("post_production", {}) or {}
         if post_prod:
             pdf.add_page()
-            pdf.set_font("Arial", "B", 14)
-            pdf.cell(0, 8, "🎛️ Post-Production & Finition".encode('latin1', 'replace').decode('latin1'), ln=True)
-            pdf.ln(2)
-
-            cg = post_prod.get("color_grading", {})
+            heading("5. Post-Production & Finition", 14)
+            cg = post_prod.get("color_grading", {}) or {}
             if cg:
-                pdf.set_font("Arial", "B", 11)
-                pdf.cell(0, 6, "🎨 Étalonnage (Color Grading)".encode('latin1', 'replace').decode('latin1'), ln=True)
-                pdf.set_font("Arial", "", 10)
-                add_wrapped_text(f"LUT recommandée : {cg.get('lut_recommandee', '')}", 10, spacing=5)
-                add_wrapped_text(f"Réglages : {cg.get('reglages_resolve', '')}", 10, spacing=5)
-                add_wrapped_text(f"Astuce lumière : {cg.get('probleme_lumiere', '')}", 10, spacing=5)
+                body("Etalonnage (Color Grading)", 11, bold=True)
+                body(f"LUT recommandée : {cg.get('lut_recommandee', '')}", 10)
+                body(f"Réglages : {cg.get('reglages_resolve', '')}", 10)
+                body(f"Astuce lumière : {cg.get('probleme_lumiere', '')}", 10)
                 pdf.ln(2)
-
-            sd = post_prod.get("sound_design", {})
+            sd = post_prod.get("sound_design", {}) or {}
             if sd:
-                pdf.set_font("Arial", "B", 11)
-                pdf.cell(0, 6, "🔊 Sound Design & Mixage".encode('latin1', 'replace').decode('latin1'), ln=True)
-                pdf.set_font("Arial", "", 10)
-                add_wrapped_text(f"Nettoyage : {sd.get('nettoyage', '')}", 10, spacing=5)
-                add_wrapped_text(f"Ambiances : {sd.get('ambiances', '')}", 10, spacing=5)
-                add_wrapped_text(f"Mixage : {sd.get('mixage', '')}", 10, spacing=5)
+                body("Sound Design & Mixage", 11, bold=True)
+                body(f"Nettoyage : {sd.get('nettoyage', '')}", 10)
+                body(f"Ambiances : {sd.get('ambiances', '')}", 10)
+                body(f"Mixage : {sd.get('mixage', '')}", 10)
                 pdf.ln(2)
-
+            vfx = post_prod.get("vfx_et_finition", {}) or {}
+            if vfx:
+                body("VFX & Finition", 11, bold=True)
+                body(f"Stabilisation : {vfx.get('stabilisation', '')}", 10)
+                body(f"Export : {vfx.get('export', '')}", 10)
+                pdf.ln(2)
             if post_prod.get("prestataires_locaux"):
-                pdf.set_font("Arial", "B", 11)
-                pdf.cell(0, 6, "📍 Prestataires Locaux".encode('latin1', 'replace').decode('latin1'), ln=True)
-                pdf.set_font("Arial", "", 10)
+                body("Prestataires Locaux", 11, bold=True)
                 for p in post_prod.get("prestataires_locaux", []):
-                    add_wrapped_text(f"• {p}", 10, spacing=5)
+                    body(f"- {p}", 10)
 
-    # Pied de page
+    # ---- Pied de page
     pdf.ln(5)
     pdf.set_font("Arial", "I", 8)
-    pdf.cell(0, 5, "CamFilm Agent - Production Cinématographique au Cameroun".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
-    pdf.cell(0, 5, f"Généré le {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(pdf.epw, 4, clean("CamFilm Agent - Production cinématographique au Cameroun"))
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(pdf.epw, 4, f"Généré le {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    return pdf.output()
+    return bytes(pdf.output())
 
 def call_agent(message: str, context: Dict[str, Any], language: str) -> Dict[str, Any]:
     try: return run_agent(message=message, context={**(context or {}), "language": language}, datasets=_DB, execute_tool_fn=execute_tool, use_parallel=True, use_gcp=False)
@@ -338,18 +345,21 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                     display_storyboard(data.get("storyboard", {}), lang)
                     display_post_production(data.get("post_production", {}), lang)
 
-                    # NOUVEAU : Bouton Export PDF
+                    # Bouton Export PDF
                     st.markdown("---")
                     c1, c2 = st.columns([1, 2])
                     with c1:
-                        pdf_bytes = generate_pdf_report(result, lang)
-                        st.download_button(
-                            label="📄 Télécharger le rapport PDF" if lang == "Français" else "📄 Download PDF Report",
-                            data=pdf_bytes,
-                            file_name="camfilm_rapport.pdf",
-                            mime="application/pdf",
-                            type="primary",
-                        )
+                        try:
+                            pdf_bytes = generate_pdf_report(result, lang)
+                            st.download_button(
+                                label="📄 Télécharger le rapport PDF" if lang == "Français" else "📄 Download PDF Report",
+                                data=pdf_bytes,
+                                file_name="camfilm_rapport.pdf",
+                                mime="application/pdf",
+                                type="primary",
+                            )
+                        except Exception as pdf_err:
+                            st.warning("⚠️ Export PDF indisponible pour le moment.")
                     with c2:
                         st.info("💡 **Astuce** : Envoyez ce PDF à votre équipe ou à vos partenaires pour partager l'analyse complète.")
                 else:
