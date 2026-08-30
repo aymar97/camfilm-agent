@@ -1,255 +1,615 @@
+# 🎬 CamFilm Agent
 
+<p align="center">
+  <strong>AI-Powered Production Intelligence for Filmmaking in Cameroon 🇨🇲</strong>
+</p>
 
-```markdown
-# CamFilm Agent
+<p align="center">
+  <em>Pre-production • Production • Post-production</em>
+</p>
+
+<p align="center">
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://camfilm-agent.streamlit.app/)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-blueviolet)](https://ai.google.dev/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Production_API-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Google Gemini](https://img.shields.io/badge/Google-Gemini%202.5%20Flash-4285F4?logo=google)](https://ai.google.dev/)
+[![Parallel](https://img.shields.io/badge/Parallel-Search%20API-black)](https://parallel.ai/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An AI agent for film production planning in Cameroon.
+</p>
 
-CamFilm Agent helps producers analyze shooting scenes, detect cultural, administrative and logistical risks, estimate realistic budgets in XAF, generate detailed storyboards, and localize dialogues into Pidgin English, Camfranglais and regional languages.
-
-Built for the Agentic Cinema hackathon (Parallel track).
-
-👉 **[Try the live demo: https://camfilm-agent.streamlit.app/](https://camfilm-agent.streamlit.app/)**
-
----
-
-## The Problem
-
-International and local film productions in Cameroon frequently fail or face costly delays because of unknown local realities:
-
-- **Drone shooting is illegal** without a specific CCAA authorization (1 to 3 months, often denied for sensitive areas).
-- **Village and chefferie protocols** require formal procedures and contributions that foreign crews ignore.
-- **Checkpoints, MINAC authorizations** and administrative frictions are unpredictable without local knowledge.
-- **No public, structured pricing data** exists for equipment, crew, catering or logistics in XAF.
-- **Inauthentic dialogues** break immersion when written in standard French instead of Pidgin or Camfranglais.
-
-The result? Confiscated equipment, blocked shootings, blown budgets, and culturally inappropriate content.
-
-## The Solution
-
-CamFilm Agent is an agentic system that combines:
-
-1. A **Gemini-powered reasoning layer** that plans which tool to call.
-2. **Four unique local datasets** built from field research on Cameroonian film production realities.
-3. **Real-time web verification** through the Parallel Search API.
-4. A **Google Agent Development Kit (ADK)** agent exposing the same tools through Google Cloud Agent Builder.
-5. A **bilingual (French / English) Streamlit interface** for producers.
+<p align="center">
+  <a href="https://camfilm-agent.streamlit.app/"><strong>🚀 Try the Live Demo</strong></a>
+</p>
 
 ---
 
-## Key Features
+## 🌍 Overview
 
-- 🚨 **Scene risk analysis** with color-coded alerts (RED, ORANGE, YELLOW) triggered by keywords such as *drone, market, village, ritual, checkpoint, children, sensitive topics*.
-- 💰 **Budget estimation in XAF and EUR** computed from real local cost datasets: cameras, sound, lighting, generators, fuel, catering, water, chefferie protocol, market contributions, fixer fees.
-- 🎬 **Technical storyboard generation** with shot types, durations, sound recommendations and legal alternatives (crane, telescopic pole, elevated building) when drones are not allowed.
-- 🎛️ **Post-production guidance**: color grading LUTs for African skin tones (Kodak 2383, African Skin Tones), sound design with iZotope RX, LUFS normalization for web and CRTV broadcast, local post-prod providers in Yaoundé and Douala.
-- 🗣️ **Dialogue localization**: Pidgin English, Camfranglais, Bamiléké and Fulfulde / Hausa regional expressions, with usage rules per context.
-- 🔍 **Real-time web search** via Parallel Search API for up-to-date regulations (CCAA, MINAC).
-- 🌍 **Bilingual FR/EN interface**: the agent answers in the selected language while local cultural data remains authentic.
-- 🔄 **Automatic retry handling** for Gemini quota and overload errors (429 / 503).
-- 🛟 **Deterministic fallback router** that works even without an LLM.
+**CamFilm Agent** is an AI-powered production intelligence system designed to help filmmakers, producers, directors, and international production teams navigate the **cultural, administrative, logistical, linguistic, and financial realities of filmmaking in Cameroon**.
 
----
+Unlike generic AI assistants, CamFilm Agent combines:
 
-## Sample Output
+* 🤖 **Agentic reasoning powered by Google Gemini**
+* 🇨🇲 **Cameroon-specific production knowledge**
+* 📊 **Local datasets covering costs, logistics, regulations, and culture**
+* 🔎 **Real-time web verification through the Parallel Search API**
+* 🎬 **Production planning and technical storyboard generation**
+* 💰 **Budget estimation in XAF and EUR**
+* 🗣️ **Localization of dialogue into Cameroonian linguistic contexts**
+* ⚖️ **Safety, legal, and cultural guardrails**
 
-Here is a real excerpt of an analysis generated for a *"5-day documentary shoot in a Bamiléké village with drone"*:
+The system acts as an intelligent **AI Line Producer for Cameroon**, helping productions identify potential problems **before cameras start rolling**.
 
-> **🔴 RED ALERT N°1: Drone usage (CCAA)**
-> Drone flying is illegal without authorization. The procedure takes 1-3 months and is often denied for sensitive areas. Strong recommendation: use alternatives (crane, telescopic pole, elevated building).
->
-> **🔴 RED ALERT N°2: Chefferie Protocol**
-> Shooting without protocol with the village chief (Fô) = risk of blocked shoot, equipment confiscation, or crew aggression. Contact the chief BEFORE arriving on site.
->
-> **💰 Estimated budget: 595,000 - 1,270,000 XAF** (907 - 1,936 EUR)
-> Including: Sony FX3 rental, "Mama du quartier" catering, chefferie protocol (kola nuts, traditional drinks, contribution envelope).
->
-> **🎬 Storyboard**: 5 shot types covering 70 minutes of footage, with sound recommendations.
-> **🎛️ Post-prod**: LUT "African Skin Tones", iZotope RX for wind/generator noise, -12 LUFS for web / -23 LUFS for CRTV.
+> **CamFilm Agent transforms local knowledge into actionable production intelligence.**
 
 ---
 
-## Architecture
+# 🎯 The Problem
 
+Filming in Cameroon can present challenges that are often difficult for international productions—and sometimes even local filmmakers—to anticipate.
+
+A production may face costly delays because of:
+
+### 🚁 Regulatory Constraints
+
+* Drone operations requiring specific authorization.
+* Administrative procedures and permits.
+* Restrictions involving sensitive locations or activities.
+* Unexpected interactions with local authorities.
+
+### 🏘️ Cultural and Community Protocols
+
+* Traditional authority structures.
+* Village and chefferie protocols.
+* Sacred spaces and rituals.
+* Cultural taboos and filming restrictions.
+
+### 💰 Lack of Structured Production Cost Data
+
+There is limited publicly structured data for estimating:
+
+* Equipment rental
+* Local crew rates
+* Transportation
+* Catering
+* Energy and generators
+* Fuel
+* Water and logistics
+* Local fixer services
+* Community and protocol-related costs
+
+### 🗣️ Linguistic Authenticity
+
+Standard French or English dialogue may fail to reflect the linguistic realities of Cameroon.
+
+Authentic productions may require contextual adaptation involving:
+
+* Pidgin English
+* Camfranglais
+* Regional expressions
+* Local linguistic conventions
+
+### ⚠️ The Consequences
+
+Without sufficient local intelligence, productions may experience:
+
+> **Budget overruns • Production delays • Administrative problems • Equipment risks • Cultural misunderstandings • Inauthentic storytelling**
+
+---
+
+# 💡 The Solution
+
+CamFilm Agent provides an **agentic production intelligence layer** that analyzes a filmmaking request and dynamically combines multiple sources of information.
+
+The system integrates:
+
+```text
+User Production Request
+          │
+          ▼
+┌──────────────────────────────┐
+│      Gemini AI Agent         │
+│   Intent & Tool Planning     │
+└──────────────┬───────────────┘
+               │
+       ┌───────┼────────┐
+       ▼       ▼        ▼
+   Local Data  Web     Production
+   Knowledge   Search  Intelligence
+       │       │        │
+       └───────┼────────┘
+               ▼
+┌──────────────────────────────┐
+│  Structured Production Plan  │
+│                              │
+│  ⚠️ Risks                    │
+│  💰 Budget                   │
+│  🎬 Storyboard               │
+│  🗣️ Dialogue Localization    │
+│  🎛️ Post-production Advice   │
+└──────────────────────────────┘
 ```
-+------------------------+        +-------------------------+
-|  Streamlit UI (FR/EN)  |        |  Google ADK Web UI      |
-|  localhost:8501        |        |  localhost:8001         |
-+-----------+------------+        +------------+------------+
-            | HTTP                             | tools
-            v                                  v
-+----------------------------------------------------------+
-|                    FastAPI application                   |
-|              localhost:8000  (/docs for Swagger)         |
-+---------------------------+------------------------------+
-                            |
-                            v
-+----------------------------------------------------------+
-|               agent_layer.py (orchestration)             |
-|  1. Gemini planning (tool selection)                     |
-|  2. Parallel Search API (real-time web, when needed)     |
-|  3. Local tool execution (6 tools, 4 datasets)           |
-|  4. Gemini final structured answer (FR or EN)            |
-+------------+-----------------------------+---------------+
-             |                             |
-             v                             v
-+-------------------------+     +--------------------------+
-| 4 local JSON datasets   |     | Parallel Search API      |
-| (Cameroon field data)   |     | api.parallel.ai          |
-+-------------------------+     +--------------------------+
+
+---
+
+# ✨ Key Capabilities
+
+## 🚨 Intelligent Scene Risk Analysis
+
+CamFilm Agent analyzes production descriptions to detect potential risks related to:
+
+* 🚁 Drone usage
+* 🏘️ Villages and traditional authorities
+* 🛒 Markets and public locations
+* 🛑 Checkpoints
+* 👶 Children and sensitive populations
+* 🕯️ Rituals and sacred practices
+* ⚖️ Sensitive subjects
+* 🎥 Administrative constraints
+
+Risks are categorized using a visual alert system:
+
+| Level     | Meaning                                          |
+| --------- | ------------------------------------------------ |
+| 🔴 RED    | Critical risk requiring action before production |
+| 🟠 ORANGE | Important risk requiring verification            |
+| 🟡 YELLOW | Contextual consideration                         |
+
+---
+
+## 💰 Cameroon-Specific Budget Estimation
+
+The system generates production budgets using local cost datasets.
+
+Budget categories include:
+
+* Cameras and equipment
+* Sound equipment
+* Lighting
+* Generators
+* Fuel
+* Transportation
+* Local crew
+* Catering
+* Water and beverages
+* Fixers
+* Village logistics
+* Traditional protocol requirements
+
+Results can be presented in:
+
+* 🇨🇲 **XAF**
+* 🇪🇺 **EUR**
+
+> All financial estimates are explicitly presented as estimates and should be verified with local providers.
+
+---
+
+## 🎬 Technical Storyboard Generation
+
+CamFilm Agent can transform a production description into a structured technical plan containing:
+
+* Shot types
+* Suggested framing
+* Estimated duration
+* Camera recommendations
+* Sound considerations
+* Alternative filming techniques
+
+When a requested approach presents regulatory challenges, the system can suggest alternatives such as:
+
+* Crane shots
+* Telescopic poles
+* Elevated filming positions
+* Alternative camera placement
+
+---
+
+## 🗣️ Dialogue Localization
+
+The system helps adapt dialogue to the linguistic and cultural context of Cameroon.
+
+Supported contexts include:
+
+* 🇨🇲 Camfranglais
+* 🗣️ Pidgin English
+* 🌍 Regional expressions
+* 🏘️ Bamiléké linguistic contexts
+* 🌐 Fulfulde / Hausa expressions
+
+The objective is not simple translation.
+
+CamFilm Agent focuses on:
+
+> **Contextual localization + cultural appropriateness + linguistic authenticity**
+
+---
+
+## 🎛️ Post-Production Intelligence
+
+The system can provide recommendations related to:
+
+### 🎨 Color Grading
+
+* LUT suggestions
+* African skin tone considerations
+* Cinematic finishing
+
+### 🔊 Sound Design
+
+* Noise reduction
+* Environmental sound management
+* Loudness normalization
+* Dialogue clarity
+
+### 🏢 Local Production Ecosystem
+
+Where relevant, the system can provide guidance related to local post-production resources.
+
+---
+
+## 🔎 Real-Time Regulation Verification
+
+Local datasets provide the system's core knowledge.
+
+However, regulations and administrative information can change.
+
+CamFilm Agent therefore integrates the **Parallel Search API** to perform real-time web verification when necessary.
+
+This hybrid approach combines:
+
+```text
+Local Knowledge
+      +
+Real-Time Web Intelligence
+      +
+AI Agent Reasoning
 ```
 
 ---
 
-## Tech Stack
+# 🧠 Agentic Architecture
 
-- **Gemini 2.5 Flash** via the Google GenAI SDK
-- **Google Agent Development Kit (ADK)** for Google Cloud Agent Builder
-- **Parallel Search API** for runtime web search
-- **FastAPI** for the tool and agent API
-- **Streamlit** for the bilingual producer interface
-- Python, httpx, pandas, python-dotenv
+CamFilm Agent follows an agent-based architecture.
+
+The AI agent does not simply generate text.
+
+It performs a reasoning workflow:
+
+```text
+1. Understand the production request
+              ↓
+2. Identify relevant production challenges
+              ↓
+3. Select appropriate tools
+              ↓
+4. Query Cameroon-specific datasets
+              ↓
+5. Perform real-time verification when necessary
+              ↓
+6. Aggregate results
+              ↓
+7. Generate a structured production recommendation
+```
 
 ---
 
-## Local Datasets
+# 🏗️ System Architecture
 
-The core value of CamFilm Agent is its **proprietary knowledge base**, stored as four JSON files:
-
-| File | Content |
-|---|---|
-| `dataset_logistique_village.json` | Village logistics, chefferie protocol, energy reality (Eneo), road conditions, transport costs |
-| `dataset_couts_reels.json` | Real equipment prices, crew day rates, catering options, water and beverages in XAF |
-| `dataset_frictions_admin.json` | MINAC authorizations, drone regulation (CCAA), police and gendarmerie checkpoints |
-| `dataset_culture_langues.json` | Visual taboos, Pidgin English and Camfranglais examples, regional expressions, linguistic rules |
-
-Each dataset includes metadata with version, generation date, confidence level and research sources, exposed through the API trace for transparency.
+```text
+                         ┌─────────────────────┐
+                         │   Streamlit UI      │
+                         │      FR / EN        │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────┐
+│                    FastAPI Application                    │
+│                                                          │
+│                 API • Tools • Agent Layer                │
+└───────────────────────────┬──────────────────────────────┘
+                            │
+                            ▼
+              ┌──────────────────────────────┐
+              │      Agent Orchestration     │
+              │                              │
+              │  • Gemini reasoning          │
+              │  • Tool selection            │
+              │  • Parallel Search           │
+              │  • Local tool execution      │
+              │  • Structured response       │
+              └──────────────┬───────────────┘
+                             │
+          ┌──────────────────┼──────────────────┐
+          ▼                  ▼                  ▼
+┌─────────────────┐  ┌────────────────┐  ┌─────────────────┐
+│ Local Datasets  │  │ Parallel API   │  │ Production Tools│
+│                 │  │                │  │                 │
+│ 🇨🇲 Cameroon    │  │ 🔎 Real-time   │  │ 🎬 💰 🗣️ ⚠️     │
+│ knowledge base  │  │ verification   │  │                 │
+└─────────────────┘  └────────────────┘  └─────────────────┘
+```
 
 ---
 
-## Installation
+# 🛠️ Technology Stack
 
-### Prerequisites
+| Technology                             | Role                                    |
+| -------------------------------------- | --------------------------------------- |
+| **Google Gemini 2.5 Flash**            | Agent reasoning and response generation |
+| **Google GenAI SDK**                   | Gemini integration                      |
+| **Google Agent Development Kit (ADK)** | Agent implementation                    |
+| **Parallel Search API**                | Real-time information verification      |
+| **FastAPI**                            | Backend and tool API                    |
+| **Streamlit**                          | Bilingual user interface                |
+| **Python**                             | Core application language               |
+| **Pandas**                             | Dataset processing                      |
+| **HTTPX**                              | API communication                       |
+| **python-dotenv**                      | Environment configuration               |
 
-- Python 3.10 or newer
-- A Google AI Studio API key (Gemini)
-- A Parallel Search API key
+---
 
-### Setup
+# 📚 Cameroon Production Knowledge Base
+
+The core intelligence of CamFilm Agent is supported by four structured datasets.
+
+| Dataset                           | Description                                                                          |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| `dataset_logistique_village.json` | Village logistics, traditional protocols, energy realities, roads and transportation |
+| `dataset_couts_reels.json`        | Equipment, crew, catering and production costs in XAF                                |
+| `dataset_frictions_admin.json`    | Administrative constraints, permits and production friction points                   |
+| `dataset_culture_langues.json`    | Cultural considerations, linguistic expressions and contextual language rules        |
+
+Each dataset can include metadata related to:
+
+* Version
+* Generation date
+* Confidence level
+* Research sources
+
+This information can be exposed through the application's dataset trace to improve transparency.
+
+---
+
+# 🔧 Available Agent Tools
+
+| Tool                     | Description                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| `analyze_scene`          | Detects production risks and provides contextual recommendations |
+| `estimate_budget`        | Generates Cameroon-specific production budget estimates          |
+| `camerounize_dialogue`   | Localizes dialogue into Cameroonian linguistic contexts          |
+| `generate_storyboard`    | Builds technical shot recommendations                            |
+| `post_production_advice` | Provides post-production recommendations                         |
+| `build_llm_context`      | Combines multiple production intelligence outputs                |
+
+---
+
+# 🚀 Installation
+
+## Prerequisites
+
+Before installing CamFilm Agent, make sure you have:
+
+* Python **3.10+**
+* A **Google AI Studio API Key**
+* A **Parallel Search API Key**
+
+---
+
+## Clone the Repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/camfilm-agent.git
+
 cd camfilm-agent
+```
 
+---
+
+## Create a Virtual Environment
+
+### Windows
+
+```bash
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
 
+.venv\Scripts\activate
+```
+
+### macOS / Linux
+
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### Environment variables
+---
 
-Create a `.env` file at the project root (never commit it):
+# 🔐 Environment Variables
+
+Create a `.env` file in the project root:
 
 ```env
-GEMINI_API_KEY=your_gemini_key
+# Google Gemini
+GEMINI_API_KEY=your_gemini_api_key
 GEMINI_MODEL=gemini-2.5-flash
 
-PARALLEL_API_KEY=your_parallel_key
+# Parallel Search API
+PARALLEL_API_KEY=your_parallel_api_key
 PARALLEL_SEARCH_URL=https://api.parallel.ai/v1beta/search
 PARALLEL_TIMEOUT=15
 ```
 
+> ⚠️ Never commit your `.env` file or API keys to a public repository.
+
 ---
 
-## Running the Application
+# ▶️ Running the Application
 
-The project exposes three interfaces. Open three terminals.
+CamFilm Agent exposes multiple interfaces.
 
-**Terminal 1 - FastAPI backend:**
+---
+
+## 1️⃣ FastAPI Backend
 
 ```bash
 python app.py
 ```
 
-API documentation: `http://127.0.0.1:8000/docs`
+The API will be available at:
 
-**Terminal 2 - Streamlit producer interface:**
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 2️⃣ Streamlit Producer Interface
 
 ```bash
 streamlit run interface.py
 ```
 
-User interface: `http://localhost:8501`
+Open:
 
-**Terminal 3 - Google ADK agent (Agent Builder):**
+```text
+http://localhost:8501
+```
+
+The interface supports:
+
+* 🇫🇷 French
+* 🇬🇧 English
+
+---
+
+## 3️⃣ Google ADK Agent Interface
 
 ```bash
 cd camfilm_adk
-set GOOGLE_API_KEY=your_gemini_key   # Windows
+```
+
+### Windows
+
+```bash
+set GOOGLE_API_KEY=your_gemini_api_key
+```
+
+Then run:
+
+```bash
 adk web --port 8001
 ```
 
-Agent Builder UI: `http://localhost:8001`
+Open:
 
----
-
-## ☁️ Deployment on Streamlit Community Cloud
-
-The app is **live** at: 👉 **https://camfilm-agent.streamlit.app/**
-
-The file `cloud_app.py` is a **self-contained version** that calls the Gemini agent directly (no FastAPI server needed), which allows free hosting on Streamlit Community Cloud.
-
-To deploy your own instance:
-
-1. Push this repository to GitHub.
-2. Go to [share.streamlit.io](https://share.streamlit.io) and click **New app**.
-3. Configure:
-   - **Main file path**: `cloud_app.py`
-   - **Branch**: `main`
-4. In **Advanced settings → Secrets**, add your keys:
-
-```toml
-GEMINI_API_KEY = "your_gemini_key"
-GEMINI_MODEL = "gemini-2.5-flash"
-PARALLEL_API_KEY = "your_parallel_key"
+```text
+http://localhost:8001
 ```
 
-5. Click **Deploy**. The app **rebuilds automatically on every `git push`**.
+---
+
+# ☁️ Live Deployment
+
+CamFilm Agent is deployed on Streamlit Community Cloud.
+
+## 🚀 Live Demo
+
+### 👉 https://camfilm-agent.streamlit.app/
+
+The cloud deployment uses a self-contained application that can directly communicate with the AI agent without requiring a separate FastAPI server.
 
 ---
 
-## API Reference
+# 🌐 Deploy Your Own Version
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/health` | Health check |
-| GET | `/hackathon/manifest` | Project manifest, capabilities, guardrails, dataset trace |
-| GET | `/hackathon/tools` | Tool schemas for external agents |
-| POST | `/hackathon/run` | Execute a single tool directly |
-| GET | `/hackathon/agent/status` | Configuration status of Gemini, Parallel, GCP |
-| POST | `/hackathon/agent/chat` | Deterministic agent router (no LLM required) |
-| POST | `/hackathon/agent/chat/gemini` | Full Gemini agent with Parallel Search and local tools |
+### 1. Push the project to GitHub
 
-### Example request
+```bash
+git add .
+
+git commit -m "Initial CamFilm Agent deployment"
+
+git push origin main
+```
+
+### 2. Create a Streamlit Community Cloud application
+
+Configure:
+
+```text
+Main file: cloud_app.py
+Branch: main
+```
+
+### 3. Add your secrets
+
+```toml
+GEMINI_API_KEY = "your_gemini_api_key"
+GEMINI_MODEL = "gemini-2.5-flash"
+
+PARALLEL_API_KEY = "your_parallel_api_key"
+```
+
+### 4. Deploy
+
+Streamlit automatically rebuilds the application after new deployments.
+
+---
+
+# 📡 API Reference
+
+| Method | Endpoint                       | Description                       |
+| ------ | ------------------------------ | --------------------------------- |
+| `GET`  | `/health`                      | Health check                      |
+| `GET`  | `/hackathon/manifest`          | Project capabilities and metadata |
+| `GET`  | `/hackathon/tools`             | Available tool schemas            |
+| `POST` | `/hackathon/run`               | Execute a tool directly           |
+| `GET`  | `/hackathon/agent/status`      | Agent configuration status        |
+| `POST` | `/hackathon/agent/chat`        | Deterministic agent router        |
+| `POST` | `/hackathon/agent/chat/gemini` | Full Gemini agent workflow        |
+
+---
+
+# 🧪 Example API Request
 
 ```json
 POST /hackathon/agent/chat/gemini
+
 {
   "message": "I want to shoot a market scene in Douala with a drone. 12 people, 2 days, small budget.",
+
   "context": {
     "description": "Market scene in Douala with drone",
-    "tags": ["market", "drone", "small_budget"],
-    "lieu": {"type": "marche", "region": "Littoral"},
+
+    "tags": [
+      "market",
+      "drone",
+      "small_budget"
+    ],
+
+    "lieu": {
+      "type": "marche",
+      "region": "Littoral"
+    },
+
     "budget_params": {
       "jours_tournage": 2,
       "equipe_personnes": 12,
@@ -258,107 +618,240 @@ POST /hackathon/agent/chat/gemini
       "marche": true,
       "fixer_local": true
     },
+
     "language": "English"
   }
 }
 ```
 
-The response contains the agent message, the selected plan, the tool result (alerts, languages, budget, storyboard, post-production), the Parallel Search result and the dataset trace.
+The agent response can include:
+
+* Selected reasoning plan
+* Risk analysis
+* Budget estimation
+* Storyboard
+* Dialogue localization
+* Post-production recommendations
+* Real-time verification results
+* Dataset trace
 
 ---
 
-## Available Tools
+# 🎬 Example Use Cases
 
-| Tool | Description |
-|---|---|
-| `analyze_scene` | Detects risks (CCAA, MINAC, chefferie, taboos) and returns linguistic recommendations |
-| `estimate_budget` | Computes realistic XAF budget from local cost datasets |
-| `camerounize_dialogue` | Converts standard French into Pidgin, Camfranglais or regional expressions |
-| `generate_storyboard` | Builds shot list with types, durations and sound recommendations |
-| `post_production_advice` | Color grading LUTs, sound design (iZotope RX), local providers |
-| `build_llm_context` | Proactive combo: analysis + budget + storyboard + post-prod in one call |
+## 🎥 International Producer
 
----
+> *"I'm arriving in Cameroon tomorrow to shoot a music video in Douala. I have 6 people, 2 shooting days, a drone and market scenes. Help me plan everything."*
 
-## Guardrails and Ethics
+CamFilm Agent can:
 
-- The agent **never recommends corruption**; it always proposes legal alternatives.
-- **RED alerts are treated as blocking** (for example: drone without CCAA authorization).
-- **Sensitive subjects** (politics, anglophone crisis, sacred rituals) trigger caution and local verification advice.
-- Foreign productions are **always advised to hire a local fixer** or regulator.
-- Estimated figures are **explicitly flagged as estimates** that must be verified locally.
+* Identify potential production risks
+* Highlight regulatory verification requirements
+* Estimate a budget
+* Recommend alternatives
+* Generate production guidance
 
 ---
 
-## Example Use Cases
+## 🎞️ Documentary on a Sensitive Topic
 
-### 🎥 Foreign producer arriving tomorrow
-> *"I'm a French producer, landing in Cameroon tomorrow for a music video in Douala. 2 days, 6 people, drone, market and Kribi beach scenes. Give me everything."*
+> *"I am shooting a documentary involving traditional societies in the North-West Region."*
 
-→ CamFilm Agent instantly flags CCAA drone risks and MINAC needs, generates a budget in XAF, builds a storyboard, provides Pidgin dialogues and lists post-prod providers in Douala.
+CamFilm Agent can provide:
 
-### 🎬 Local director on a sensitive topic
-> *"I'm shooting a documentary on Kwifon secret societies in the North-West."*
-
-→ RED alerts on cultural taboos and anglophone crisis safety, recommendation to hire a local fixer and contact the chefferie beforehand.
-
-### 🎓 Film student budgeting a short film
-> *"How much for a 3-day short film with 10 people?"*
-
-→ Detailed XAF budget with every line item, including "Mama du quartier" catering.
+* Cultural sensitivity alerts
+* Recommendations for local verification
+* Guidance on engaging local stakeholders
+* Production safety considerations
 
 ---
 
-## Project Status
+## 🎓 Film Student
 
-**Completed:**
-- ✅ FastAPI tool API with four Cameroon-specific datasets
-- ✅ Gemini agent layer with planning, retry and bilingual output
-- ✅ Parallel Search API integration at runtime
-- ✅ Google ADK agent with the same six tools
-- ✅ Bilingual Streamlit interface (FR/EN)
-- ✅ Live deployment on Streamlit Community Cloud
+> *"How much could a 3-day short film with 10 people cost?"*
 
-**Planned:**
-- Migration to Google Cloud Run for production scale
-- Additional field data collected from real productions
-- Producer testimonials and pilot tests
-- Support for more Cameroonian languages (Ewondo, Duala, Bassa)
+CamFilm Agent can generate a structured estimate including:
+
+* Equipment
+* Crew
+* Food
+* Transportation
+* Logistics
+* Additional production requirements
 
 ---
 
-## Hackathon
+# 🛡️ Guardrails & Responsible AI
 
-This project was built for **Agentic Cinema on Devpost** (Parallel track).
+CamFilm Agent follows several safety and ethical principles.
 
-**Requirements coverage:**
+### 🚫 No Corruption Recommendations
 
-- ✅ **Gemini**: reasoning and final answer generation
-- ✅ **Google Cloud Agent Builder**: agent implemented with the Google Agent Development Kit
-- ✅ **Parallel**: Search API called at runtime for regulation verification
-- ✅ **Hosted application**: live on Streamlit Community Cloud, Cloud Run migration planned
+The system does not recommend bribery or illegal practices.
+
+It focuses on:
+
+> **Legal procedures • Local verification • Responsible production planning**
+
+### 🔴 Critical Risk Alerts
+
+Critical risks require additional verification before production decisions are made.
+
+### 🏘️ Cultural Respect
+
+Sensitive cultural practices, sacred spaces and community protocols require:
+
+* Respect
+* Verification
+* Local consultation
+
+### 👥 Local Expertise
+
+Where appropriate, international productions are encouraged to collaborate with:
+
+* Local fixers
+* Cultural experts
+* Relevant authorities
+* Production professionals
+
+### 💰 Financial Transparency
+
+Budget outputs are clearly identified as **estimates**.
+
+Actual prices should always be confirmed with local providers.
 
 ---
 
-## License
+# 🧪 Resilience & Reliability
 
-MIT License. See the [LICENSE](LICENSE) file.
+CamFilm Agent includes mechanisms designed to improve reliability:
+
+* 🔄 Retry handling for temporary AI service errors
+* ⚡ Deterministic fallback routing
+* 🧠 Local knowledge-based execution
+* 🔎 Optional real-time verification
+* 🌐 Bilingual output support
+
+The system can therefore continue providing structured production intelligence even when full LLM functionality is temporarily unavailable.
 
 ---
 
-## Author
+# 📊 Project Status
 
-**Aymar Mbassi** — CamFilm Agent, Cameroon 🇨
+## ✅ Completed
 
-*Made with ❤️ for Cameroonian cinema. Saving productions, one alert at a time.*
+* [x] FastAPI production intelligence API
+* [x] Cameroon-specific knowledge datasets
+* [x] Gemini-powered agent layer
+* [x] Tool planning and orchestration
+* [x] Parallel Search API integration
+* [x] Google ADK agent implementation
+* [x] Bilingual Streamlit interface
+* [x] Budget estimation
+* [x] Scene risk analysis
+* [x] Dialogue localization
+* [x] Technical storyboard generation
+* [x] Post-production guidance
+* [x] Live cloud deployment
+
+---
+
+## 🚧 Future Development
+
+* [ ] Production-scale deployment on Google Cloud Run
+* [ ] Additional field data from real Cameroonian productions
+* [ ] Producer pilot programs
+* [ ] Professional testimonials
+* [ ] Expanded linguistic support
+* [ ] Support for Ewondo
+* [ ] Support for Duala
+* [ ] Support for Bassa
+* [ ] Additional regional production intelligence
+
+---
+
+# 🏆 Hackathon Project
+
+CamFilm Agent was developed for the **Agentic Cinema Hackathon** in the **Parallel track**.
+
+The project demonstrates:
+
+* 🤖 Agentic AI reasoning
+* 🔎 Real-time search integration
+* 🛠️ Tool orchestration
+* 🌍 Domain-specific AI knowledge
+* 🇨🇲 Localized AI for an underrepresented creative ecosystem
+* 🎬 Practical AI applications for cinema production
+
+---
+
+# 🌟 Why CamFilm Agent?
+
+Most AI filmmaking tools focus on:
+
+* Script generation
+* Image generation
+* Video generation
+* Generic production planning
+
+CamFilm Agent focuses on a different problem:
+
+> ## **Making filmmaking AI understand where the production is actually happening.**
+
+For Cameroon, that means understanding the intersection between:
+
+```text
+🎬 Cinema
+      +
+🇨🇲 Local Reality
+      +
+⚖️ Regulations
+      +
+🏘️ Culture
+      +
+💰 Economics
+      +
+🗣️ Language
+      +
+🤖 Agentic AI
+```
+
+---
+
+# 📄 License
+
+This project is distributed under the **MIT License**.
+
+See the [LICENSE](LICENSE) file for more information.
+
+---
+
+# 👨‍💻 Author
+
+**Aymar Mbassi**
+
+🇨🇲 Cameroon
+
+**CamFilm Agent**
+
+> *Building AI systems that transform local knowledge into actionable intelligence.*
 
 ---
 
 <p align="center">
-  <strong>🎬 CamFilm Agent — Your AI line producer for Cameroon</strong><br>
-  <em>Pre-production • Shooting • Post-production</em><br>
-  <a href="https://camfilm-agent.streamlit.app/">camfilm-agent.streamlit.app</a>
-</p>
-```
 
----
+# 🎬 CamFilm Agent
+
+### **Your AI Line Producer for Cameroon 🇨🇲**
+
+**Pre-production • Production • Post-production**
+
+<br>
+
+🚀 **[Try the Live Demo](https://camfilm-agent.streamlit.app/)**
+
+<br>
+
+<em>Made with ❤️ for Cameroonian cinema.</em>
+
+</p>
