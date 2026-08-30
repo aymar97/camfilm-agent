@@ -3,7 +3,7 @@ cloud_app.py
 ============
 Version AUTONOME de l'interface pour Streamlit Community Cloud.
 """
-import os, streamlit as st, pandas as pd
+import os, re, streamlit as st, pandas as pd
 from typing import Dict, Any
 import datetime
 
@@ -27,9 +27,10 @@ TEXTS = {
 LEVEL_TRANSLATION = {"Français": {"ROUGE": "ROUGE", "ORANGE": "ORANGE", "JAUNE": "JAUNE", "INFO": "INFO"}, "English": {"ROUGE": "RED", "ORANGE": "ORANGE", "JAUNE": "YELLOW", "INFO": "INFO"}}
 
 # ---------------------------------------------------------------------
-# Utilitaire PDF : nettoie les emojis / caractères non latin-1
+# Utilitaires PDF : nettoyage + rendu Markdown propre
 # ---------------------------------------------------------------------
 def _clean_pdf_text(text: Any) -> str:
+    """Remplace les emojis par du texte et encode en latin-1."""
     text = str(text or "")
     for emo, rep in {
         "🔴": "[ROUGE] ", "🟠": "[ORANGE] ", "🟡": "[JAUNE] ", "ℹ️": "[INFO] ",
@@ -40,8 +41,145 @@ def _clean_pdf_text(text: Any) -> str:
         text = text.replace(emo, rep)
     return text.encode("latin-1", "replace").decode("latin-1")
 
+
+def _clean_markdown_escapes(text: str) -> str:
+    """Supprime les backslashes d'échappement Markdown (\*, \*\*, \')."""
+    text = text.replace("\\*\\*", "")  # \*\* → (vide)
+    text = text.replace("\\*", "*")     # \* → *
+    text = text.replace("\\'", "'")     # \' → '
+    text = text.replace('\\"', '"')     # \" → "
+    text = text.replace("\\_", "_")     # \_ → _
+    return text
+
+
+def _render_md_line(pdf, line: str, base_size: int = 10):
+    """Rend une ligne avec gestion du **gras** et *italique* inline."""
+    clean_line = _clean_pdf_text(line)
+
+    # Parse les segments : **gras** et *italique*
+    # Pattern : **texte** OU *texte* (non greedy)
+    pattern = r'(\*\*.*?\*\*|\*.*?\*)'
+    parts = re.split(pattern, clean_line)
+
+    for part in parts:
+        if not part:
+            continue
+        if part.startswith("**") and part.endswith("**"):
+            pdf.set_font("Arial", "B", base_size)
+            pdf.write(5, part[2:-2])
+        elif part.startswith("*") and part.endswith("*") and not part.startswith("**"):
+            pdf.set_font("Arial", "I", base_size)
+            pdf.write(5, part[1:-1])
+        else:
+            pdf.set_font("Arial", "", base_size)
+            pdf.write(5, part)
+
+
+def _render_markdown_block(pdf, text: str):
+    """Parse et rend un bloc Markdown complet (titres, listes, séparateurs, gras/italique)."""
+    if not text:
+        return
+
+    text = _clean_markdown_escapes(text)
+    lines = text.split('\n')
+    i = 0
+
+    while i < len(lines):
+        line = lines[i].strip()
+
+        # Ligne vide
+        if not line:
+            pdf.ln(3)
+            i += 1
+            continue
+
+        # Séparateur horizontal (---)
+        if line.startswith("---") or line.startswith("***") or line.startswith("___"):
+            y = pdf.get_y() + 2
+            pdf.line(pdf.l_margin, y, pdf.l_margin + pdf.epw, y)
+            pdf.ln(6)
+            i += 1
+            continue
+
+        # Titre H1 (#)
+        if line.startswith("# ") and not line.startswith("## "):
+            title = line[2:].strip()
+            pdf.set_font("Arial", "B", 16)
+            pdf.set_x(pdf.l_margin)
+            pdf.set_text_color(0, 51, 102)  # Bleu foncé
+            pdf.multi_cell(pdf.epw, 8, _clean_pdf_text(title))
+            pdf.set_text_color(0, 0, 0)
+            pdf.ln(3)
+            i += 1
+            continue
+
+        # Titre H2 (##)
+        if line.startswith("## ") and not line.startswith("### "):
+            title = line[3:].strip()
+            pdf.set_font("Arial", "B", 14)
+            pdf.set_x(pdf.l_margin)
+            pdf.set_text_color(0, 51, 102)
+            pdf.multi_cell(pdf.epw, 7, _clean_pdf_text(title))
+            pdf.set_text_color(0, 0, 0)
+            pdf.ln(2)
+            i += 1
+            continue
+
+        # Titre H3 (###)
+        if line.startswith("### ") and not line.startswith("#### "):
+            title = line[4:].strip()
+            pdf.set_font("Arial", "B", 12)
+            pdf.set_x(pdf.l_margin)
+            pdf.set_text_color(51, 51, 51)
+            pdf.multi_cell(pdf.epw, 6, _clean_pdf_text(title))
+            pdf.set_text_color(0, 0, 0)
+            pdf.ln(2)
+            i += 1
+            continue
+
+        # Titre H4 (####)
+        if line.startswith("#### "):
+            title = line[5:].strip()
+            pdf.set_font("Arial", "BI", 11)
+            pdf.set_x(pdf.l_margin)
+            pdf.multi_cell(pdf.epw, 6, _clean_pdf_text(title))
+            pdf.ln(1)
+            i += 1
+            continue
+
+        # Liste à puces (* item ou - item)
+        if line.startswith("* ") or line.startswith("- "):
+            indent = pdf.l_margin + 4
+            bullet_content = line[2:].strip()
+            pdf.set_x(indent)
+            pdf.set_font("Arial", "B", 10)
+            pdf.write(5, "• ")
+            _render_md_line(pdf, bullet_content, 10)
+            pdf.ln(5)
+            i += 1
+            continue
+
+        # Liste indentée (  * item ou  - item)
+        if line.startswith("  * ") or line.startswith("  - "):
+            indent = pdf.l_margin + 10
+            bullet_content = line[4:].strip()
+            pdf.set_x(indent)
+            pdf.set_font("Arial", "", 9)
+            pdf.write(5, "- ")
+            _render_md_line(pdf, bullet_content, 9)
+            pdf.ln(4)
+            i += 1
+            continue
+
+        # Paragraphe normal
+        pdf.set_x(pdf.l_margin)
+        _render_md_line(pdf, line, 10)
+        pdf.ln(5)
+        i += 1
+
+
 # ---------------------------------------------------------------------
-# Génération du rapport PDF (version robuste fpdf2)
+# Génération du rapport PDF (version avec Markdown rendu proprement)
 # ---------------------------------------------------------------------
 def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
     from fpdf import FPDF
@@ -55,8 +193,10 @@ def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
 
     def heading(text, size=14):
         pdf.set_font("Arial", "B", size)
+        pdf.set_text_color(0, 51, 102)
         pdf.set_x(pdf.l_margin)
         pdf.multi_cell(pdf.epw, 7, clean(text))
+        pdf.set_text_color(0, 0, 0)
         pdf.ln(2)
 
     def body(text, size=10, bold=False):
@@ -66,19 +206,31 @@ def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
         pdf.ln(1)
 
     # ---- Page de titre
-    pdf.set_font("Arial", "B", 18)
-    pdf.cell(0, 10, clean(f"{tr['title']} - Rapport Complet"), align="C")
-    pdf.ln(12)
-    pdf.set_font("Arial", "I", 10)
+    pdf.set_font("Arial", "B", 22)
+    pdf.set_text_color(0, 51, 102)
+    pdf.cell(0, 12, clean(f"{tr['title']}"), align="C")
+    pdf.ln(14)
+    pdf.set_font("Arial", "I", 12)
+    pdf.set_text_color(80, 80, 80)
     pdf.cell(0, 6, clean(tr["subtitle"]), align="C")
-    pdf.ln(6)
-    pdf.cell(0, 6, f"Date : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}", align="C")
+    pdf.ln(8)
+    pdf.set_font("Arial", "", 10)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 6, f"Généré le {datetime.datetime.now().strftime('%Y-%m-%d à %H:%M')}", align="C")
+    pdf.ln(10)
+
+    # Ligne de séparation élégante
+    y = pdf.get_y()
+    pdf.set_draw_color(0, 51, 102)
+    pdf.set_line_width(0.5)
+    pdf.line(pdf.l_margin, y, pdf.l_margin + pdf.epw, y)
+    pdf.set_line_width(0.2)
+    pdf.set_draw_color(0, 0, 0)
     pdf.ln(8)
 
-    # ---- Rapport de l'agent
+    # ---- Rapport de l'agent (Markdown rendu proprement)
     if result.get("agent_message"):
-        heading(f"1. {tr['report']}", 14)
-        body(result["agent_message"], 10)
+        _render_markdown_block(pdf, result["agent_message"])
 
     tool_result = result.get("tool_result") or {}
     if tool_result.get("status") == "success":
@@ -88,107 +240,206 @@ def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
         alerts = (data.get("analysis", {}) or {}).get("alerts", [])
         if alerts:
             pdf.add_page()
-            heading(f"2. {tr['alerts']}", 14)
+            heading(f"🚨 {tr['alerts']}", 16)
             for alert in alerts:
                 level = alert.get("level", "INFO")
-                body(f"[{level}] {alert.get('message', '')}", 10)
-                pdf.ln(1)
+                # Couleur selon le niveau
+                if level == "ROUGE":
+                    pdf.set_fill_color(255, 220, 220)
+                    pdf.set_text_color(180, 0, 0)
+                elif level == "ORANGE":
+                    pdf.set_fill_color(255, 235, 200)
+                    pdf.set_text_color(200, 100, 0)
+                elif level == "JAUNE":
+                    pdf.set_fill_color(255, 250, 200)
+                    pdf.set_text_color(150, 120, 0)
+                else:
+                    pdf.set_fill_color(230, 240, 255)
+                    pdf.set_text_color(0, 80, 160)
+
+                pdf.set_font("Arial", "B", 11)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(pdf.epw, 7, clean(f"[ALERTE {level}]"), fill=True)
+                pdf.ln(7)
+                pdf.set_text_color(0, 0, 0)
+                body(alert.get('message', ''), 10)
+                pdf.ln(3)
 
         # ---- Budget
         budget = data.get("budget", {}) or {}
         if budget:
             pdf.add_page()
-            heading(f"3. {tr['budget']}", 14)
-            body(f"{tr['min_budget']} : {budget.get('low_XAF', 0):,} XAF ({budget.get('low_EUR', 0):.2f} EUR)", 11, bold=True)
-            body(f"{tr['max_budget']} : {budget.get('high_XAF', 0):,} XAF ({budget.get('high_EUR', 0):.2f} EUR)", 11, bold=True)
-            body(f"{tr['duration_team']} : {budget.get('jours_tournage', 0)} {tr['days_unit']} / {budget.get('equipe_personnes', 0)} {tr['people_unit']}", 11)
-            pdf.ln(2)
+            heading(f"💰 {tr['budget']}", 16)
 
+            # Encadré métriques
+            pdf.set_fill_color(240, 248, 255)
+            pdf.rect(pdf.l_margin, pdf.get_y(), pdf.epw, 25, style="F")
+
+            pdf.set_font("Arial", "B", 11)
+            pdf.set_x(pdf.l_margin + 3)
+            pdf.cell(90, 7, clean(f"{tr['min_budget']} : {budget.get('low_XAF', 0):,} XAF"))
+            pdf.cell(90, 7, clean(f"({budget.get('low_EUR', 0):.2f} EUR)"))
+            pdf.ln(7)
+
+            pdf.set_x(pdf.l_margin + 3)
+            pdf.cell(90, 7, clean(f"{tr['max_budget']} : {budget.get('high_XAF', 0):,} XAF"))
+            pdf.cell(90, 7, clean(f"({budget.get('high_EUR', 0):.2f} EUR)"))
+            pdf.ln(7)
+
+            pdf.set_x(pdf.l_margin + 3)
+            pdf.set_font("Arial", "", 10)
+            pdf.cell(0, 7, clean(f"{tr['duration_team']} : {budget.get('jours_tournage', 0)} {tr['days_unit']} / {budget.get('equipe_personnes', 0)} {tr['people_unit']}"))
+            pdf.ln(12)
+
+            # Tableau détaillé
             lines = budget.get("lines", [])
             if lines:
                 pdf.set_font("Arial", "B", 9)
+                pdf.set_fill_color(0, 51, 102)
+                pdf.set_text_color(255, 255, 255)
                 pdf.set_x(pdf.l_margin)
-                pdf.cell(70, 6, clean("Poste"), border=1)
-                pdf.cell(30, 6, "Min (XAF)", border=1, align="R")
-                pdf.cell(30, 6, "Max (XAF)", border=1, align="R")
-                pdf.cell(60, 6, clean("Note"), border=1)
+                pdf.cell(70, 7, clean("Poste"), border=1, fill=True)
+                pdf.cell(30, 7, "Min (XAF)", border=1, align="R", fill=True)
+                pdf.cell(30, 7, "Max (XAF)", border=1, align="R", fill=True)
+                pdf.cell(60, 7, clean("Note"), border=1, fill=True)
                 pdf.ln()
+                pdf.set_text_color(0, 0, 0)
                 pdf.set_font("Arial", "", 8)
+                row_fill = False
                 for line in lines:
+                    if row_fill:
+                        pdf.set_fill_color(245, 245, 245)
+                    else:
+                        pdf.set_fill_color(255, 255, 255)
                     pdf.set_x(pdf.l_margin)
-                    pdf.cell(70, 5, clean(str(line.get("poste", ""))[:38]), border=1)
-                    pdf.cell(30, 5, f"{line.get('low_XAF', 0):,}", border=1, align="R")
-                    pdf.cell(30, 5, f"{line.get('high_XAF', 0):,}", border=1, align="R")
-                    pdf.cell(60, 5, clean(str(line.get("note", ""))[:30]), border=1)
+                    pdf.cell(70, 5, clean(str(line.get("poste", ""))[:38]), border=1, fill=True)
+                    pdf.cell(30, 5, f"{line.get('low_XAF', 0):,}", border=1, align="R", fill=True)
+                    pdf.cell(30, 5, f"{line.get('high_XAF', 0):,}", border=1, align="R", fill=True)
+                    pdf.cell(60, 5, clean(str(line.get("note", ""))[:30]), border=1, fill=True)
                     pdf.ln()
+                    row_fill = not row_fill
 
         # ---- Storyboard
         storyboard = data.get("storyboard", {}) or {}
         if storyboard.get("storyboard"):
             pdf.add_page()
-            heading("4. Storyboard de tournage", 14)
-            body(f"Durée totale estimée : {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)", 11, bold=True)
-            if storyboard.get("son_global"):
-                body(f"Son global : {storyboard.get('son_global', '')}", 10)
-            pdf.ln(2)
+            heading("🎬 Storyboard de tournage", 16)
 
+            # Encadré résumé
+            pdf.set_fill_color(240, 255, 240)
+            pdf.rect(pdf.l_margin, pdf.get_y(), pdf.epw, 15, style="F")
+            pdf.set_font("Arial", "B", 11)
+            pdf.set_x(pdf.l_margin + 3)
+            pdf.cell(0, 7, clean(f"⏱️ Durée totale : {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)"))
+            pdf.ln(7)
+            pdf.set_font("Arial", "", 10)
+            pdf.set_x(pdf.l_margin + 3)
+            if storyboard.get("son_global"):
+                pdf.cell(0, 7, clean(f"🔊 {storyboard.get('son_global', '')}"))
+            pdf.ln(10)
+
+            # Tableau storyboard
             pdf.set_font("Arial", "B", 8)
+            pdf.set_fill_color(0, 51, 102)
+            pdf.set_text_color(255, 255, 255)
             pdf.set_x(pdf.l_margin)
-            pdf.cell(8, 6, "#", border=1, align="C")
-            pdf.cell(42, 6, clean("Plan"), border=1)
-            pdf.cell(70, 6, clean("Description"), border=1)
-            pdf.cell(18, 6, clean("Durée"), border=1, align="C")
-            pdf.cell(52, 6, clean("Son"), border=1)
+            pdf.cell(8, 6, "#", border=1, align="C", fill=True)
+            pdf.cell(42, 6, clean("Plan"), border=1, fill=True)
+            pdf.cell(70, 6, clean("Description"), border=1, fill=True)
+            pdf.cell(18, 6, clean("Durée"), border=1, align="C", fill=True)
+            pdf.cell(52, 6, clean("Son"), border=1, fill=True)
             pdf.ln()
+            pdf.set_text_color(0, 0, 0)
             pdf.set_font("Arial", "", 7.5)
+            row_fill = False
             for shot in storyboard.get("storyboard", []):
+                if row_fill:
+                    pdf.set_fill_color(245, 245, 245)
+                else:
+                    pdf.set_fill_color(255, 255, 255)
                 pdf.set_x(pdf.l_margin)
-                pdf.cell(8, 5, str(shot.get("numero", "")), border=1, align="C")
-                pdf.cell(42, 5, clean(str(shot.get("type_plan", ""))[:24]), border=1)
-                pdf.cell(70, 5, clean(str(shot.get("description", ""))[:45]), border=1)
-                pdf.cell(18, 5, f"{shot.get('duree_minutes', '')} min", border=1, align="C")
-                pdf.cell(52, 5, clean(str(shot.get("son_recommande", ""))[:28]), border=1)
+                pdf.cell(8, 5, str(shot.get("numero", "")), border=1, align="C", fill=True)
+                pdf.cell(42, 5, clean(str(shot.get("type_plan", ""))[:24]), border=1, fill=True)
+                pdf.cell(70, 5, clean(str(shot.get("description", ""))[:45]), border=1, fill=True)
+                pdf.cell(18, 5, f"{shot.get('duree_minutes', '')} min", border=1, align="C", fill=True)
+                pdf.cell(52, 5, clean(str(shot.get("son_recommande", ""))[:28]), border=1, fill=True)
                 pdf.ln()
+                row_fill = not row_fill
+
+            pdf.ln(3)
             for note in storyboard.get("notes", []):
-                body(f"! {note}", 9)
+                pdf.set_font("Arial", "BI", 9)
+                pdf.set_text_color(180, 0, 0)
+                pdf.set_x(pdf.l_margin)
+                pdf.multi_cell(pdf.epw, 5, clean(f"⚠️ {note}"))
+                pdf.set_text_color(0, 0, 0)
 
         # ---- Post-Production
         post_prod = data.get("post_production", {}) or {}
         if post_prod:
             pdf.add_page()
-            heading("5. Post-Production & Finition", 14)
+            heading("🎛️ Post-Production & Finition", 16)
+
             cg = post_prod.get("color_grading", {}) or {}
             if cg:
-                body("Etalonnage (Color Grading)", 11, bold=True)
+                pdf.set_font("Arial", "B", 12)
+                pdf.set_fill_color(255, 240, 220)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(pdf.epw, 7, clean("🎨 Étalonnage (Color Grading)"), fill=True)
+                pdf.ln(8)
                 body(f"LUT recommandée : {cg.get('lut_recommandee', '')}", 10)
-                body(f"Réglages : {cg.get('reglages_resolve', '')}", 10)
+                body(f"Réglages Resolve : {cg.get('reglages_resolve', '')}", 10)
                 body(f"Astuce lumière : {cg.get('probleme_lumiere', '')}", 10)
-                pdf.ln(2)
+                pdf.ln(3)
+
             sd = post_prod.get("sound_design", {}) or {}
             if sd:
-                body("Sound Design & Mixage", 11, bold=True)
+                pdf.set_font("Arial", "B", 12)
+                pdf.set_fill_color(220, 240, 255)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(pdf.epw, 7, clean("🔊 Sound Design & Mixage"), fill=True)
+                pdf.ln(8)
                 body(f"Nettoyage : {sd.get('nettoyage', '')}", 10)
                 body(f"Ambiances : {sd.get('ambiances', '')}", 10)
                 body(f"Mixage : {sd.get('mixage', '')}", 10)
-                pdf.ln(2)
+                pdf.ln(3)
+
             vfx = post_prod.get("vfx_et_finition", {}) or {}
             if vfx:
-                body("VFX & Finition", 11, bold=True)
+                pdf.set_font("Arial", "B", 12)
+                pdf.set_fill_color(240, 220, 255)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(pdf.epw, 7, clean("🎬 VFX & Finition"), fill=True)
+                pdf.ln(8)
                 body(f"Stabilisation : {vfx.get('stabilisation', '')}", 10)
                 body(f"Export : {vfx.get('export', '')}", 10)
-                pdf.ln(2)
+                pdf.ln(3)
+
             if post_prod.get("prestataires_locaux"):
-                body("Prestataires Locaux", 11, bold=True)
+                pdf.set_font("Arial", "B", 12)
+                pdf.set_fill_color(220, 255, 220)
+                pdf.set_x(pdf.l_margin)
+                pdf.cell(pdf.epw, 7, clean("📍 Prestataires Locaux"), fill=True)
+                pdf.ln(8)
                 for p in post_prod.get("prestataires_locaux", []):
-                    body(f"- {p}", 10)
+                    body(f"• {p}", 10)
 
     # ---- Pied de page
-    pdf.ln(5)
+    pdf.ln(8)
+    y = pdf.get_y()
+    pdf.set_draw_color(0, 51, 102)
+    pdf.set_line_width(0.3)
+    pdf.line(pdf.l_margin, y, pdf.l_margin + pdf.epw, y)
+    pdf.set_line_width(0.2)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.ln(3)
     pdf.set_font("Arial", "I", 8)
+    pdf.set_text_color(100, 100, 100)
     pdf.set_x(pdf.l_margin)
     pdf.multi_cell(pdf.epw, 4, clean("CamFilm Agent - Production cinématographique au Cameroun"))
     pdf.set_x(pdf.l_margin)
-    pdf.multi_cell(pdf.epw, 4, f"Généré le {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    pdf.multi_cell(pdf.epw, 4, f"Rapport généré automatiquement le {datetime.datetime.now().strftime('%Y-%m-%d à %H:%M:%S')}")
+    pdf.set_text_color(0, 0, 0)
 
     return bytes(pdf.output())
 
@@ -217,7 +468,7 @@ def display_budget(budget, lang):
         st.markdown("### " + tr["detail"])
         st.dataframe(pd.DataFrame([{"Poste": l.get("poste", ""), "Quantité": f"{l.get('quantite',0)} {l.get('unit','')}", "Min (XAF)": f"{l.get('low_XAF',0):,}", "Max (XAF)": f"{l.get('high_XAF',0):,}", "Note": l.get("note", "")} for l in lines]), use_container_width=True, hide_index=True)
         st.markdown("### " + tr["chart"])
-        st.bar_chart(pd.DataFrame({"Poste": [l.get("poste", "").split(":")[0] for l in lines[:7]], "Min (XAF)": [l.get("low_XAF", 0) for l in lines[:7]], "Max (XAF)": [l.get("high_XAF", 0) for l in lines[:7]]}).set_index("Poste"))
+        st.bar_chart(pd.DataFrame({"Poste": [l.get("poste", "").split(":")[0] for l in lines[:7]], "Min (XAF)": [l.get('low_XAF', 0) for l in lines[:7]], "Max (XAF)": [l.get('high_XAF', 0) for l in lines[:7]]}).set_index("Poste"))
     if budget.get("notes"):
         st.warning("**" + tr["notes"] + "**")
         for n in budget["notes"]: st.markdown(f"- {n}")
@@ -359,7 +610,7 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                                 type="primary",
                             )
                         except Exception as pdf_err:
-                            st.warning("⚠️ Export PDF indisponible pour le moment.")
+                            st.warning(f"⚠️ Export PDF indisponible : {pdf_err}")
                     with c2:
                         st.info("💡 **Astuce** : Envoyez ce PDF à votre équipe ou à vos partenaires pour partager l'analyse complète.")
                 else:
@@ -367,4 +618,4 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                 with st.expander("🔧 " + tr["tech"]): st.json(result)
 
 st.markdown("---")
-st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v1.0-cloud — Cycle Complet : Pré-prod, Réalisation, Post-prod + Export PDF</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v1.1-cloud — Cycle Complet + Export PDF Pro</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
