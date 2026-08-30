@@ -1,4 +1,4 @@
-Ah oui, tu as raison ! Voici le **README complet** avec la section **Deployment Streamlit Cloud** et le lien de l'app live bien mis en avant. Copie-colle tout :
+
 
 ```markdown
 # CamFilm Agent
