@@ -5,6 +5,7 @@ Version AUTONOME de l'interface pour Streamlit Community Cloud.
 """
 import os, streamlit as st, pandas as pd
 from typing import Dict, Any
+import datetime
 
 try:
     for _key, _value in st.secrets.items(): os.environ.setdefault(_key, str(_value))
@@ -24,6 +25,165 @@ TEXTS = {
     "English": {"title": "CamFilm Agent", "subtitle": "AI Agent for Film Production in Cameroon", "examples": "Request examples", "scenario1": "Scenario 1: Market in Douala", "scenario2": "Scenario 2: Bamileke Village", "use1": "Use Example 1", "use2": "Use Example 2", "tip": "Tip:", "tip_text": "The more details you provide (location, duration, crew, equipment), the more accurate the agent!", "describe": "Describe your film project", "message_label": "Your message:", "placeholder": "Example: I want to shoot a short film in Yaounde, street scene with 8 people, 3 days...", "advanced": "Advanced Settings (Optional)", "basic_info": "Basic information:", "days": "Shooting days", "people": "Number of people", "lieu_type": "Location type", "region": "Region", "materiel": "Equipment & services:", "camera": "Camera", "sound": "Sound", "lighting": "Lighting", "generator": "Generator", "catering": "Catering", "fixer": "Local fixer", "tags": "Tags (comma separated)", "analyze": "Analyze with CamFilm Agent", "analyzing": "The agent is analyzing your project...", "error_empty": "Please describe your film project.", "error_connect": "Internal agent error. Check the API keys in the secrets.", "done": "Analysis complete!", "report": "Full Agent Report", "alerts": "Detected Alerts", "no_alerts": "No alerts detected", "alert_word": "ALERT", "languages": "Language Recommendations", "recommended": "Recommended languages:", "dialogue_examples": "Dialogue examples:", "budget": "Estimated Budget", "min_budget": "Minimum Budget", "max_budget": "Maximum Budget", "duration_team": "Duration & Crew", "days_unit": "days", "people_unit": "people", "detail": "Expense Breakdown", "chart": "Budget Distribution", "notes": "Notes:", "tech": "Technical Information", "agent_asked_details": "The agent needs more details. Tell it about the location, duration, crew, etc."},
 }
 LEVEL_TRANSLATION = {"Français": {"ROUGE": "ROUGE", "ORANGE": "ORANGE", "JAUNE": "JAUNE", "INFO": "INFO"}, "English": {"ROUGE": "RED", "ORANGE": "ORANGE", "JAUNE": "YELLOW", "INFO": "INFO"}}
+
+# ---------------------------------------------------------------------
+# NOUVEAU : Fonction d'export PDF
+# ---------------------------------------------------------------------
+def generate_pdf_report(result: Dict[str, Any], lang: str) -> bytes:
+    """Génère un PDF complet du rapport CamFilm Agent."""
+    from fpdf import FPDF
+
+    tr = TEXTS[lang]
+    pdf = FPDF()
+    pdf.add_page()
+
+    # Fonction helper pour le texte multi-lignes
+    def add_wrapped_text(text, font_size=10, bold=False, spacing=5):
+        if bold:
+            pdf.set_font("Arial", "B", font_size)
+        else:
+            pdf.set_font("Arial", "", font_size)
+        pdf.multi_cell(0, spacing, text.encode('latin1', 'replace').decode('latin1'))
+
+    # Titre
+    pdf.set_font("Arial", "B", 18)
+    pdf.cell(0, 10, f"{tr['title']} - Rapport Complet".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
+    pdf.set_font("Arial", "I", 10)
+    pdf.cell(0, 6, f"{tr['subtitle']}".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
+    pdf.cell(0, 6, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True, align="C")
+    pdf.ln(5)
+
+    # Message de l'agent
+    if result.get("agent_message"):
+        pdf.set_font("Arial", "B", 14)
+        pdf.cell(0, 8, f"📋 {tr['report']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+        pdf.ln(2)
+        add_wrapped_text(result["agent_message"], 10, spacing=5)
+        pdf.ln(3)
+
+    tool_result = result.get("tool_result") or {}
+    if tool_result.get("status") == "success":
+        data = tool_result.get("result", {})
+
+        # Alertes
+        analysis = data.get("analysis", {})
+        alerts = analysis.get("alerts", [])
+        if alerts:
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 8, f"🚨 {tr['alerts']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(2)
+            for alert in alerts:
+                level = alert.get("level", "INFO")
+                pdf.set_font("Arial", "B", 11)
+                pdf.cell(0, 6, f"{ALERT_EMOJIS.get(level, '•')} {level}".encode('latin1', 'replace').decode('latin1'), ln=True)
+                add_wrapped_text(alert.get('message', ''), 10, spacing=5)
+                pdf.ln(2)
+
+        # Budget
+        budget = data.get("budget", {})
+        if budget:
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 8, f"💰 {tr['budget']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(2)
+
+            pdf.set_font("Arial", "", 11)
+            pdf.cell(0, 6, f"{tr['min_budget']}: {budget.get('low_XAF', 0):,} XAF ({budget.get('low_EUR', 0):.2f} EUR)".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.cell(0, 6, f"{tr['max_budget']}: {budget.get('high_XAF', 0):,} XAF ({budget.get('high_EUR', 0):.2f} EUR)".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.cell(0, 6, f"{tr['duration_team']}: {budget.get('jours_tournage', 0)} {tr['days_unit']}, {budget.get('equipe_personnes', 0)} {tr['people_unit']}".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(3)
+
+            # Tableau des postes
+            lines = budget.get("lines", [])
+            if lines:
+                pdf.set_font("Arial", "B", 10)
+                pdf.cell(60, 6, "Poste", border=1)
+                pdf.cell(30, 6, "Min (XAF)", border=1, align="R")
+                pdf.cell(30, 6, "Max (XAF)", border=1, align="R")
+                pdf.cell(70, 6, "Note", border=1)
+                pdf.ln()
+
+                pdf.set_font("Arial", "", 9)
+                for line in lines:
+                    pdf.cell(60, 5, str(line.get("poste", ""))[:30].encode('latin1', 'replace').decode('latin1'), border=1)
+                    pdf.cell(30, 5, f"{line.get('low_XAF', 0):,}", border=1, align="R")
+                    pdf.cell(30, 5, f"{line.get('high_XAF', 0):,}", border=1, align="R")
+                    pdf.cell(70, 5, str(line.get("note", ""))[:35].encode('latin1', 'replace').decode('latin1'), border=1)
+                    pdf.ln()
+
+        # Storyboard
+        storyboard = data.get("storyboard", {})
+        if storyboard and storyboard.get("storyboard"):
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 8, "🎬 Storyboard de tournage".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(2)
+
+            pdf.set_font("Arial", "", 11)
+            pdf.cell(0, 6, f"⏱️ Durée totale estimée : {storyboard.get('duree_estimee_heures', 0)} h ({storyboard.get('duree_totale_minutes', 0)} min)".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(3)
+
+            # Tableau du storyboard
+            pdf.set_font("Arial", "B", 9)
+            pdf.cell(10, 6, "#", border=1, align="C")
+            pdf.cell(40, 6, "Plan", border=1)
+            pdf.cell(80, 6, "Description", border=1)
+            pdf.cell(20, 6, "Durée", border=1, align="C")
+            pdf.cell(40, 6, "Son", border=1)
+            pdf.ln()
+
+            pdf.set_font("Arial", "", 8)
+            for shot in storyboard.get("storyboard", []):
+                pdf.cell(10, 5, str(shot.get("numero", "")), border=1, align="C")
+                pdf.cell(40, 5, str(shot.get("type_plan", ""))[:20].encode('latin1', 'replace').decode('latin1'), border=1)
+                pdf.cell(80, 5, str(shot.get("description", ""))[:40].encode('latin1', 'replace').decode('latin1'), border=1)
+                pdf.cell(20, 5, f"{shot.get('duree_minutes', '')} min", border=1, align="C")
+                pdf.cell(40, 5, str(shot.get("son_recommande", ""))[:20].encode('latin1', 'replace').decode('latin1'), border=1)
+                pdf.ln()
+
+        # Post-Production
+        post_prod = data.get("post_production", {})
+        if post_prod:
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 8, "🎛️ Post-Production & Finition".encode('latin1', 'replace').decode('latin1'), ln=True)
+            pdf.ln(2)
+
+            cg = post_prod.get("color_grading", {})
+            if cg:
+                pdf.set_font("Arial", "B", 11)
+                pdf.cell(0, 6, "🎨 Étalonnage (Color Grading)".encode('latin1', 'replace').decode('latin1'), ln=True)
+                pdf.set_font("Arial", "", 10)
+                add_wrapped_text(f"LUT recommandée : {cg.get('lut_recommandee', '')}", 10, spacing=5)
+                add_wrapped_text(f"Réglages : {cg.get('reglages_resolve', '')}", 10, spacing=5)
+                add_wrapped_text(f"Astuce lumière : {cg.get('probleme_lumiere', '')}", 10, spacing=5)
+                pdf.ln(2)
+
+            sd = post_prod.get("sound_design", {})
+            if sd:
+                pdf.set_font("Arial", "B", 11)
+                pdf.cell(0, 6, "🔊 Sound Design & Mixage".encode('latin1', 'replace').decode('latin1'), ln=True)
+                pdf.set_font("Arial", "", 10)
+                add_wrapped_text(f"Nettoyage : {sd.get('nettoyage', '')}", 10, spacing=5)
+                add_wrapped_text(f"Ambiances : {sd.get('ambiances', '')}", 10, spacing=5)
+                add_wrapped_text(f"Mixage : {sd.get('mixage', '')}", 10, spacing=5)
+                pdf.ln(2)
+
+            if post_prod.get("prestataires_locaux"):
+                pdf.set_font("Arial", "B", 11)
+                pdf.cell(0, 6, "📍 Prestataires Locaux".encode('latin1', 'replace').decode('latin1'), ln=True)
+                pdf.set_font("Arial", "", 10)
+                for p in post_prod.get("prestataires_locaux", []):
+                    add_wrapped_text(f"• {p}", 10, spacing=5)
+
+    # Pied de page
+    pdf.ln(5)
+    pdf.set_font("Arial", "I", 8)
+    pdf.cell(0, 5, "CamFilm Agent - Production Cinématographique au Cameroun".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
+    pdf.cell(0, 5, f"Généré le {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".encode('latin1', 'replace').decode('latin1'), ln=True, align="C")
+
+    return pdf.output()
 
 def call_agent(message: str, context: Dict[str, Any], language: str) -> Dict[str, Any]:
     try: return run_agent(message=message, context={**(context or {}), "language": language}, datasets=_DB, execute_tool_fn=execute_tool, use_parallel=True, use_gcp=False)
@@ -177,9 +337,24 @@ if st.button("🚀 " + tr["analyze"], type="primary", use_container_width=True):
                     display_budget(data.get("budget", {}), lang)
                     display_storyboard(data.get("storyboard", {}), lang)
                     display_post_production(data.get("post_production", {}), lang)
+
+                    # NOUVEAU : Bouton Export PDF
+                    st.markdown("---")
+                    c1, c2 = st.columns([1, 2])
+                    with c1:
+                        pdf_bytes = generate_pdf_report(result, lang)
+                        st.download_button(
+                            label="📄 Télécharger le rapport PDF" if lang == "Français" else "📄 Download PDF Report",
+                            data=pdf_bytes,
+                            file_name="camfilm_rapport.pdf",
+                            mime="application/pdf",
+                            type="primary",
+                        )
+                    with c2:
+                        st.info("💡 **Astuce** : Envoyez ce PDF à votre équipe ou à vos partenaires pour partager l'analyse complète.")
                 else:
                     st.info("💬 " + tr["agent_asked_details"])
                 with st.expander("🔧 " + tr["tech"]): st.json(result)
 
 st.markdown("---")
-st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v0.6.0-cloud — Cycle Complet : Pré-prod, Réalisation, Post-prod</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#888;font-size:0.9em;'><p>CamFilm Agent v1.0-cloud — Cycle Complet : Pré-prod, Réalisation, Post-prod + Export PDF</p><p>Hosted on Streamlit Community Cloud</p></div>", unsafe_allow_html=True)
